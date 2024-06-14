@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a6a8d10384d84799ce1b56b337a61, type: 3}
+  m_Name: LSPlayerClips
+  m_EditorClassIdentifier: 
+  clipSounds:
+  - {fileID: 8300000, guid: 38908df4d5fe2ad449a6f3ba3168a81e, type: 3}
+  - {fileID: 8300000, guid: c80a418d9ad521c4a8675cecd7997646, type: 3}
+  - {fileID: 8300000, guid: 63a884be657d6cf4c8e20b3bc24446b0, type: 3}

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3143ad54a84c9074f8f7c18875339570, type: 3}
+  m_Name: Dialogue
+  m_EditorClassIdentifier: 
+  dialogueEntries:
+  - characterName: ANVATI
+    dialogueText: Go dota
+    dialogueImage1: {fileID: 21300000, guid: 05bcfb7673888184083a335f533c8732, type: 3}
+    dialogueImage2: {fileID: 21300000, guid: 05bcfb7673888184083a335f533c8732, type: 3}
+  - characterName: MAMA COCO
+    dialogueText: Hola papaseto
+    dialogueImage1: {fileID: 21300000, guid: 5ffe103f286b0cb4ca4dfeffec6f55db, type: 3}
+    dialogueImage2: {fileID: 21300000, guid: 5ffe103f286b0cb4ca4dfeffec6f55db, type: 3}
+  - characterName: PAPA JAVIER
+    dialogueText: "ANVATI ES EL M\xC1S GOZU"
+    dialogueImage1: {fileID: 21300000, guid: dc5a3df9e87e6c444b3924fc26a6dfa6, type: 3}
+    dialogueImage2: {fileID: 21300000, guid: dc5a3df9e87e6c444b3924fc26a6dfa6, type: 3}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a6a8d10384d84799ce1b56b337a61, type: 3}
+  m_Name: LSGoblinClips
+  m_EditorClassIdentifier: 
+  clipSounds:
+  - {fileID: 8300000, guid: 3adad444b310b43439dffef4c94c23ea, type: 3}
+  - {fileID: 8300000, guid: acf46e4e068760a4192ecfa3771d0848, type: 3}
+  - {fileID: 8300000, guid: 6b164c4ca5099274eba2524d6c74f40d, type: 3}
+  - {fileID: 8300000, guid: 4f0012461f3d8fe489da1836f9ade6ba, type: 3}

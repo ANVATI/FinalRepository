@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a6a8d10384d84799ce1b56b337a61, type: 3}
+  m_Name: LSBossClips
+  m_EditorClassIdentifier: 
+  clipSounds:
+  - {fileID: 8300000, guid: 2ef385b76e6756749802ce9583550ea6, type: 3}
+  - {fileID: 8300000, guid: 4c3f8157fa591ab4ab24643a9c20b023, type: 3}
+  - {fileID: 8300000, guid: 2849edd899672e94e95f3403f5b6fb5f, type: 3}
+  - {fileID: 8300000, guid: 5e4196d983e393741b32f45dd8967275, type: 3}
+  - {fileID: 8300000, guid: 5476ae975cbd82a4390b064ae4d473a1, type: 3}
+  - {fileID: 8300000, guid: 5d7df4223c66b2f44be1b215a20caa3d, type: 3}
+  - {fileID: 8300000, guid: ed40b7af7f1ac9c409e92617d55e3b73, type: 3}
+  - {fileID: 8300000, guid: e796aae0b5b877d49a8a1f5d1cc200e7, type: 3}
