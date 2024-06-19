@@ -9,7 +9,6 @@ public class HerenciaEnemy : MonoBehaviour
     protected Animator animator;
     protected Rigidbody rb;
     protected Collider enemyCollider;
-    public Transform playerTransform;
     protected AudioSource _audio;
     protected int currentHP; 
     protected int maxHP;
