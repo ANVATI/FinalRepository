@@ -8,7 +8,8 @@ public class OptionsMenuController : MonoBehaviour
     public RectTransform optionsWindow;
     public CanvasGroup optionsCanvasGroup;
     public RectTransform ui_menu; 
-    public CanvasGroup buttonsmenú; 
+    public CanvasGroup buttonsmenú;
+    public GameObject block;
 
     private Vector2 hiddenPosition;
     private Vector2 visiblePosition;
@@ -54,6 +55,7 @@ public class OptionsMenuController : MonoBehaviour
 
     public void OpenOptionsMenu()
     {
+        block.SetActive(true);
         optionsWindow.DOAnchorPos(visiblePosition, 1f).SetEase(Ease.InOutBack);
         optionsCanvasGroup.DOFade(1, 1f).OnComplete(() =>
         {
@@ -64,6 +66,7 @@ public class OptionsMenuController : MonoBehaviour
 
     public void CloseOptionsMenu()
     {
+        block.SetActive(false);
         optionsCanvasGroup.interactable = false;
         optionsCanvasGroup.blocksRaycasts = false;
         optionsWindow.DOAnchorPos(hiddenPosition, 1f).SetEase(Ease.InOutBack);
