@@ -78,10 +78,20 @@ public class PlayerController : MonoBehaviour
         UpdateAnimation();
         AudioMovement();
     }
+
     public void AudioMovement()
     {
-        if (movementInput.magnitude > 0)
+        if (movementInput.magnitude > 0 && !isAttacking && !isRolling)
         {
+            if (playerState == PlayerState.Running)
+            {
+                walkAudioSource.clip = _actionSounds.clipSounds[4]; 
+            }
+            else
+            {
+                walkAudioSource.clip = _actionSounds.clipSounds[3]; 
+            }
+
             if (!walkAudioSource.isPlaying)
             {
                 walkAudioSource.Play();
@@ -92,6 +102,7 @@ public class PlayerController : MonoBehaviour
             walkAudioSource.Stop();
         }
     }
+
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -120,6 +131,7 @@ public class PlayerController : MonoBehaviour
         {
             if (context.started && playerState == PlayerState.Running)
             {
+                canAttack = false;
                 StartCoroutine(Roll());
             }
         }
@@ -130,6 +142,17 @@ public class PlayerController : MonoBehaviour
         if (context.started && !isAttacking)
         {
             ToggleCrouch();
+        }
+    }
+
+    public void OnSecondaryAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed && canAttack && playerState != PlayerState.Rolling)
+        {
+            if (playerAttributes.Stamina > 10 && playerState != PlayerState.Crouching && playerState != PlayerState.CrouchingAttack)
+            {
+                StartCoroutine(SecondaryAttack());
+            }
         }
     }
 
@@ -184,10 +207,11 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(transform.forward * playerAttributes.rollForce, ForceMode.Impulse);
 
         yield return new WaitForSeconds(1f);
-
+        canAttack = true;
         animator.SetBool("IsRolling", false);
         playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
         isRolling = false;
+        canAttack = true;
     }
     private IEnumerator Attack()
     {
@@ -196,11 +220,28 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Attacking;
         DecreaseStamina(5);
         canAttack = false;
-        animator.SetBool("IsAttacking", true);
+        animator.SetBool("Attack1", true);
 
         yield return new WaitForSeconds(0.95f);
 
-        animator.SetBool("IsAttacking", false);
+        animator.SetBool("Attack1", false);
+        playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
+        canAttack = true;
+        Trail.SetActive(false);
+        isAttacking = false;
+    }
+    private IEnumerator SecondaryAttack()
+    {
+        isAttacking = true;
+        Trail.SetActive(true);
+        playerState = PlayerState.Attacking;
+        DecreaseStamina(8); 
+        canAttack = false;
+        animator.SetBool("Attack2", true); 
+
+        yield return new WaitForSeconds(1.2f); 
+
+        animator.SetBool("Attack2", false);
         playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
         canAttack = true;
         Trail.SetActive(false);

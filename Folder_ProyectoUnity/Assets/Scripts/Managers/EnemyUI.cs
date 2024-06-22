@@ -7,14 +7,17 @@ public class EnemyUI : MonoBehaviour
 {
     public Image goblinLifeBar;
     public Image bossLifeBar;
+    public Image vikingLifeBar;
 
     private Goblin goblin;
     private Boss boss;
+    private Viking viking;
 
     private void Start()
     {
         goblin = GetComponentInParent<Goblin>();
         boss = GetComponentInParent<Boss>();
+        viking = GetComponentInParent<Viking>();
     }
 
     private void Update()
@@ -30,6 +33,10 @@ public class EnemyUI : MonoBehaviour
         {
             UpdateBossLifeBar();
         }
+        if (viking != null && vikingLifeBar != null)
+        {
+            UpdateVikingLifeBar();
+        }
     }
 
     void UpdateGoblinLifeBar()
@@ -42,5 +49,10 @@ public class EnemyUI : MonoBehaviour
     {
         float fillAmount = (float)boss.GetCurrentHP() / (float)boss.GetMaxHP();
         bossLifeBar.fillAmount = fillAmount;
+    }
+    void UpdateVikingLifeBar()
+    {
+        float fillAmount = (float)viking.GetCurrentHP() / (float)viking.GetMaxHP();
+        vikingLifeBar.fillAmount = fillAmount;
     }
 }

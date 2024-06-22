@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a6a8d10384d84799ce1b56b337a61, type: 3}
+  m_Name: LSVikingClips
+  m_EditorClassIdentifier: 
+  clipSounds:
+  - {fileID: 8300000, guid: a96d9f93ba06bd54384270473be5b7f5, type: 3}
+  - {fileID: 8300000, guid: 9c314fd0d096b1944a34453e35e0d434, type: 3}
+  - {fileID: 8300000, guid: 78845dc8514a764468012608c14f1a6e, type: 3}
+  - {fileID: 8300000, guid: 9b709131ca9702a4d97d4bbab4ffbd04, type: 3}
+  - {fileID: 8300000, guid: 6293bfe38b8ab514ba5686fe7020b2c1, type: 3}
+  - {fileID: 8300000, guid: 36f1c9259c21b5b4ebfd695a0851777e, type: 3}
+  - {fileID: 8300000, guid: 5ca75645a44e0524bba7ccbcec2d90ed, type: 3}
