@@ -1,15 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class OptionsMenuController : MonoBehaviour
 {
     public RectTransform optionsWindow;
     public CanvasGroup optionsCanvasGroup;
-    public RectTransform ui_menu; 
+    public RectTransform ui_menu;
     public CanvasGroup buttonsmenú;
     public GameObject block;
+    private AudioSource _audio;
+    public LibrarySounds clips;
 
     private Vector2 hiddenPosition;
     private Vector2 visiblePosition;
@@ -26,15 +30,16 @@ public class OptionsMenuController : MonoBehaviour
     public float distanceY;
     public float duration;
 
-    public float moveDistance; 
+    public float moveDistance;
     public float moveDuration = 1f;
 
     private bool isMoved = false;
 
-
     public static event Action OnImagesMoved;
+
     void Start()
     {
+        _audio = GetComponent<AudioSource>();
         optionsCanvasGroup.alpha = 0;
         optionsCanvasGroup.interactable = false;
         optionsCanvasGroup.blocksRaycasts = false;
@@ -50,11 +55,11 @@ public class OptionsMenuController : MonoBehaviour
         visibleMenuPosition = hiddenMenuPosition - new Vector2(menuSlideDistance, 0f);
 
         optionsWindow.anchoredPosition = hiddenPosition;
-
     }
 
     public void OpenOptionsMenu()
     {
+        _audio.PlayOneShot(clips.clipSounds[1]);
         block.SetActive(true);
         optionsWindow.DOAnchorPos(visiblePosition, 1f).SetEase(Ease.InOutBack);
         optionsCanvasGroup.DOFade(1, 1f).OnComplete(() =>
@@ -66,31 +71,39 @@ public class OptionsMenuController : MonoBehaviour
 
     public void CloseOptionsMenu()
     {
+        _audio.PlayOneShot(clips.clipSounds[1]);
         block.SetActive(false);
         optionsCanvasGroup.interactable = false;
         optionsCanvasGroup.blocksRaycasts = false;
         optionsWindow.DOAnchorPos(hiddenPosition, 1f).SetEase(Ease.InOutBack);
         optionsCanvasGroup.DOFade(0, 1f);
     }
+
     public void SlideMenuLeft()
     {
-        ui_menu.DOAnchorPosX(visibleMenuPosition.x, 1.5f).SetEase(Ease.OutSine);
+        _audio.PlayOneShot(clips.clipSounds[0]);
+        _audio.PlayOneShot(clips.clipSounds[4]);
+        ui_menu.DOAnchorPosX(visibleMenuPosition.x, 1.5f).SetEase(Ease.InSine);
     }
 
     public void SlideMenuRight()
     {
+        _audio.PlayOneShot(clips.clipSounds[0]);
+        _audio.PlayOneShot(clips.clipSounds[4]);
         ui_menu.DOAnchorPosX(hiddenMenuPosition.x, 1.5f).SetEase(Ease.InSine);
     }
+
     public void MoveImages()
     {
         if (!isMoved)
         {
+            _audio.PlayOneShot(clips.clipSounds[0]);
+            _audio.PlayOneShot(clips.clipSounds[2]);
             leftImage.rectTransform.DOMoveX(leftImage.rectTransform.position.x - moveDistance, moveDuration).SetEase(Ease.InOutQuint);
             rightImage.rectTransform.DOMoveX(rightImage.rectTransform.position.x + moveDistance, moveDuration).SetEase(Ease.InOutQuint);
+            StartCoroutine(WaitforClip());
             isMoved = true;
-
             OnImagesMoved?.Invoke();
-
         }
         else
         {
@@ -99,11 +112,17 @@ public class OptionsMenuController : MonoBehaviour
             isMoved = false;
         }
     }
+
     public void CloseGame()
     {
+        _audio.PlayOneShot(clips.clipSounds[0]); 
         Close.rectTransform.DOMoveY(Close.rectTransform.position.y - distanceY, duration).SetEase(Ease.InBack);
         Debug.Log("Saliendo del juego...");
     }
 
+    IEnumerator WaitforClip()
+    {
+        yield return new WaitForSeconds(1.2f);
+        _audio.PlayOneShot(clips.clipSounds[3]);
+    }
 }
-   

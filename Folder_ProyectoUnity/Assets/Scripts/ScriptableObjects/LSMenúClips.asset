@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a6a8d10384d84799ce1b56b337a61, type: 3}
+  m_Name: "LSMen\xFAClips"
+  m_EditorClassIdentifier: 
+  clipSounds:
+  - {fileID: 8300000, guid: 7b6e1388fa9eea4418f34bcb3a601be4, type: 3}
+  - {fileID: 8300000, guid: 3a09230db611a5d4c9fc03fef9ff2fe4, type: 3}
+  - {fileID: 8300000, guid: 789bb3aa5e9a8b84d8afbe922e32ec63, type: 3}
+  - {fileID: 8300000, guid: fc62011e7a567514d94f8b0483ac1230, type: 3}
+  - {fileID: 8300000, guid: 6cd4fd1bbe32a004eb1b1f29d931e699, type: 3}

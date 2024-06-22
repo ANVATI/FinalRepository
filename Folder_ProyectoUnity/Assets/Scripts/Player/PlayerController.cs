@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public PlayerActions playerAction;
     public GameObject Trail;
     public AudioSource walkAudioSource;
+    public AudioClip[] movementSounds;
     public AudioSource _audioSource;
     public LibrarySounds _actionSounds;
 
@@ -80,8 +81,17 @@ public class PlayerController : MonoBehaviour
     }
     public void AudioMovement()
     {
-        if (movementInput.magnitude > 0)
+        if (movementInput.magnitude > 0 && !isAttacking && !isRolling)
         {
+            if (playerState == PlayerState.Running)
+            {
+                walkAudioSource.clip = movementSounds[1]; 
+            }
+            else
+            {
+                walkAudioSource.clip = movementSounds[0]; 
+            }
+
             if (!walkAudioSource.isPlaying)
             {
                 walkAudioSource.Play();
