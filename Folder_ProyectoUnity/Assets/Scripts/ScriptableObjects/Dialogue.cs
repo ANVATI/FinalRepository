@@ -10,7 +10,6 @@ public class Dialogue : ScriptableObject
         public string characterName;
         public string dialogueText;
         public Sprite dialogueImage1;
-        public Sprite dialogueImage2;
     }
     //Modificar con la lista creada por mí
     public List<DialogueEntry> dialogueEntries;

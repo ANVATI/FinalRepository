@@ -6,7 +6,7 @@ public class EnemyMovement : MonoBehaviour
     public List<Node3D> patrolPath = new List<Node3D>();
     public float speed = 3.0f;
     public float waitTime = 2.0f;
-    public Transform player;  // Referencia al jugador
+    public Transform player; 
 
     private int currentNodeIndex = 0;
     private bool isWaiting = false;

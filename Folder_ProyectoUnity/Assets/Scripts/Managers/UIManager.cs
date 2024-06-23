@@ -17,7 +17,6 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI characterNameText;
     public TextMeshProUGUI dialogueText;
     public Image dialogueImage1;
-    public Image dialogueImage2;
     public GameObject dialoguePanel;
     private int currentDialogueIndex = 0;
 
@@ -93,8 +92,7 @@ public class UIManager : MonoBehaviour
         {
             characterNameText.text = dialogue.dialogueEntries[currentDialogueIndex].characterName;
             dialogueText.text = dialogue.dialogueEntries[currentDialogueIndex].dialogueText;
-            dialogueImage1.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage1;
-            dialogueImage2.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage2;
+            dialogueImage1.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage1;         
             currentDialogueIndex++;
         }
         else

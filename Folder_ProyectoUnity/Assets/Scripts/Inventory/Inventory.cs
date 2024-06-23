@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
     private int indiceActual = 0;
     private PlayerController _player;
     private float timeToChange = 0;
-    private bool isChangingWeapon = false; // Añadido para evitar múltiples cambios simultáneos
+    private bool isChangingWeapon = false; 
 
     private void Awake()
     {

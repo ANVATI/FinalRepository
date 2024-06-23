@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     public PlayerAttributes playerAttributes;
     public Transform cameraTransform;
     public PlayerActions playerAction;
-    public GameObject Trail;
     public AudioSource walkAudioSource;
     public AudioSource _audioSource;
     public LibrarySounds _actionSounds;
@@ -216,7 +215,6 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Attack()
     {
         isAttacking = true;
-        Trail.SetActive(true);
         playerState = PlayerState.Attacking;
         DecreaseStamina(5);
         canAttack = false;
@@ -227,13 +225,11 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Attack1", false);
         playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
         canAttack = true;
-        Trail.SetActive(false);
         isAttacking = false;
     }
     private IEnumerator SecondaryAttack()
     {
         isAttacking = true;
-        Trail.SetActive(true);
         playerState = PlayerState.Attacking;
         DecreaseStamina(8); 
         canAttack = false;
@@ -244,14 +240,12 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Attack2", false);
         playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
         canAttack = true;
-        Trail.SetActive(false);
         isAttacking = false;
     }
 
     private IEnumerator CrouchAttack()
     {
         isAttacking = true;
-        Trail.SetActive(true);
         playerState = PlayerState.CrouchingAttack;
         DecreaseStamina(5);
         canAttack = false;
@@ -262,7 +256,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("AttackCrouch", false);
         playerState = PlayerState.Crouching;
         canAttack = true;
-        Trail.SetActive(false);
         isAttacking = false;
     }
 

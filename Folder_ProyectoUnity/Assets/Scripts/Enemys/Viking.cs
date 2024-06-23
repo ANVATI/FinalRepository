@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class Viking : HerenciaEnemy
 {
-    //private Renderer enemyRenderer;
     public LibrarySounds vikingSounds;
-    //private MaterialPropertyBlock mpb;
-    //private float dissolveAmount = 0f;
-    //private float dissolveSpeed = 1f;
     private float timer;
 
 
@@ -28,8 +24,6 @@ public class Viking : HerenciaEnemy
         maxHP = 10;
         currentHP = maxHP;
         pushingForce = 10;
-        //enemyRenderer = GetComponentInChildren<Renderer>();
-        //mpb = new MaterialPropertyBlock();
     }
 
     public void TakeDamage(int damage, Vector3 attackerPosition)
@@ -53,7 +47,7 @@ public class Viking : HerenciaEnemy
         _audio.PlayOneShot(vikingSounds.clipSounds[5]);
         StopCoroutine(IntHint());
         animator.SetBool("VikingHit", false);
-        StartCoroutine(DieGoblin());
+        StartCoroutine(DieViking());
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,28 +70,14 @@ public class Viking : HerenciaEnemy
         animator.SetBool("VikingHit", false);
     }
 
-    IEnumerator DieGoblin()
+    IEnumerator DieViking()
     {
         animator.SetTrigger("VikingDie");
         enemyCollider.enabled = false;
+        yield return new WaitForSeconds(0.1f);
         rb.constraints |= RigidbodyConstraints.FreezePositionY;
-        //Destroy(Eyes.gameObject);
-        yield return new WaitForSeconds(2f);
-        /*while (dissolveAmount < 1f)
-        {
-            dissolveAmount += Time.deltaTime * dissolveSpeed;
-            SetDissolveAmount(dissolveAmount);
-            yield return null;
-        }
-        */
-
+        yield return new WaitForSeconds(10f);
         Destroy(gameObject);
     }
-    /*
-    private void SetDissolveAmount(float amount)
-    {
-        mpb.SetFloat("_DissolveAmount", amount);
-        enemyRenderer.SetPropertyBlock(mpb);
-    }
-    */
+    
 }
