@@ -6,7 +6,9 @@ public class Weapons : MonoBehaviour
 {
     public BoxCollider[] weapons;
     public GameObject[] activateWeapons;
-    public GameObject trail;
+    public GameObject trail1;
+    public GameObject trail2;
+    public GameObject trail3;
     private AudioSource _weaponsSource;
     public AudioClip slashSound;
     public int Damage = 5;
@@ -28,7 +30,9 @@ public class Weapons : MonoBehaviour
             }
         }
         _weaponsSource.PlayOneShot(slashSound);
-        trail.SetActive(true);
+        trail1.SetActive(true);
+        trail2.SetActive(true);
+        trail3.SetActive(true);
         Debug.Log("Se activo el arma");
 
     }
@@ -41,7 +45,9 @@ public class Weapons : MonoBehaviour
                 weapons[i].enabled = false;
             }
         }
-        trail.SetActive(false);
+        trail1.SetActive(false);
+        trail2.SetActive(false);
+        trail3.SetActive(false);
         Debug.Log("Se desactivo el arma");
     }
     public void ActivateWeapons(int index)

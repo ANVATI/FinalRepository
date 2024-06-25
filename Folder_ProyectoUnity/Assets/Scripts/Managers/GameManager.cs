@@ -7,7 +7,6 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-
     private void OnEnable()
     {
         OptionsMenuController.OnImagesMoved += ChangeScene;
