@@ -7,7 +7,6 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject Options;
 
     private void OnEnable()
     {
@@ -22,20 +21,21 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(WaitForChangeScene());
     }
-    public void AppearOptions()
-    {
-        
-    }
-    public void DissapearOptions()
-    {
-        Options.SetActive(false);
-    }
 
     IEnumerator WaitForChangeScene()
     {
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Nivel");
     }
-
+    public void RestartLvl()
+    {
+        SceneManager.LoadScene("Nivel");
+        Time.timeScale = 1;
+    }
+    public void ReturnMenú()
+    {
+        SceneManager.LoadScene("Menú");
+        Time.timeScale = 1;
+    }
 
 }

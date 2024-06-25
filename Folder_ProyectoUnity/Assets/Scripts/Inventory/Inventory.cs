@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
     private int indiceActual = 0;
     private PlayerController _player;
     private float timeToChange = 0;
-    private bool isChangingWeapon = false; 
+    private bool isChangingWeapon = false;
 
     private void Awake()
     {
@@ -41,19 +41,14 @@ public class Inventory : MonoBehaviour
             {
                 if (i == indiceActual)
                 {
-                    imagenesArmas[i].color = new Color(0, 0, 0, 1f);
+                    imagenesArmas[i].color = new Color(imagenesArmas[i].color.r, imagenesArmas[i].color.g, imagenesArmas[i].color.b, 1f);
                     armas[i].SetActive(true);
                 }
                 else
                 {
-                    imagenesArmas[i].color = new Color(0, 0, 0, 0.5f);
+                    imagenesArmas[i].color = new Color(imagenesArmas[i].color.r, imagenesArmas[i].color.g, imagenesArmas[i].color.b, 0.5f);
                     armas[i].SetActive(false);
                 }
-            }
-            else
-            {
-                imagenesArmas[i].color = new Color(1f, 1f, 1f, 0.5f);
-                armas[i].SetActive(false);
             }
         }
     }
@@ -81,11 +76,11 @@ public class Inventory : MonoBehaviour
     {
         if (!_player.isAttacking)
         {
-            int nuevoIndice = indiceActual;
-            do
+            int nuevoIndice = (indiceActual - 1 + armas.Length) % armas.Length;
+            while (!armasDesbloqueadas[nuevoIndice] && nuevoIndice != indiceActual)
             {
                 nuevoIndice = (nuevoIndice - 1 + armas.Length) % armas.Length;
-            } while (!armasDesbloqueadas[nuevoIndice] && nuevoIndice != indiceActual);
+            }
 
             if (nuevoIndice != indiceActual)
             {
@@ -99,11 +94,11 @@ public class Inventory : MonoBehaviour
     {
         if (!_player.isAttacking)
         {
-            int nuevoIndice = indiceActual;
-            do
+            int nuevoIndice = (indiceActual + 1) % armas.Length;
+            while (!armasDesbloqueadas[nuevoIndice] && nuevoIndice != indiceActual)
             {
                 nuevoIndice = (nuevoIndice + 1) % armas.Length;
-            } while (!armasDesbloqueadas[nuevoIndice] && nuevoIndice != indiceActual);
+            }
 
             if (nuevoIndice != indiceActual)
             {

@@ -3,6 +3,7 @@ using UnityEngine;
 public class ColisionDetectada : MonoBehaviour
 {
     public int indiceArmaADesbloquear;
+    public GameObject BG;
 
     void OnTriggerEnter(Collider other)
     {
@@ -13,6 +14,7 @@ public class ColisionDetectada : MonoBehaviour
             {
                 inventory.DesbloquearArma(indiceArmaADesbloquear);
                 gameObject.SetActive(false);
+                Destroy(BG);
             }
         }
     }

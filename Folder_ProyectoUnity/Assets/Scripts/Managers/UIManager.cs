@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -20,15 +22,22 @@ public class UIManager : MonoBehaviour
     public GameObject dialoguePanel;
     private int currentDialogueIndex = 0;
 
+    [Header("Options")]
+    public GameObject ApperOptions;
+    public GameObject VolumeSettings;
+    public bool isOpen = false;
+
     private void Start()
     {
         dialoguePanel.SetActive(false);
+        ApperOptions.SetActive(false);
+        VolumeSettings.SetActive(false);
+
         if (playerController == null)
         {
             playerController = PlayerController.Instance;
         }
     }
-
     private void Update()
     {
         if (playerController != null)
@@ -38,12 +47,48 @@ public class UIManager : MonoBehaviour
             UpdateRageBar();
             
         }
-
-        if (dialoguePanel.activeSelf && Input.GetKeyDown(KeyCode.Space))
+    }
+    public void NextDialogue(InputAction.CallbackContext context)
+    {
+        if (context.performed && dialoguePanel.activeSelf)
         {
             DisplayNextDialogue();
         }
-
+    }
+    public void OpenOptions(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (ApperOptions.activeSelf)
+            {
+                ApperOptions.SetActive(false);
+                VolumeSettings.SetActive(false);
+                Time.timeScale = 1;
+                isOpen = false;
+            }
+            else
+            {
+                ApperOptions.SetActive(true);
+                Time.timeScale = 0;
+                isOpen = true;
+            }
+        }
+    }   
+    public void CloseOption()
+    {
+        ApperOptions.SetActive(false);
+        Time.timeScale = 1;
+        isOpen = false;
+    }
+    public void OpenVolumeSettings()
+    {
+        VolumeSettings.SetActive(true);
+        ApperOptions.SetActive(false);
+    }
+    public void CloseVolumeSettings()
+    {
+        ApperOptions.SetActive(true);
+        VolumeSettings.SetActive(false);
     }
 
     private void UpdateStaminaBar()

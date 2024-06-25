@@ -25,12 +25,10 @@ public class EnemyMovement : MonoBehaviour
     {
         if (isFollowingPlayer)
         {
-            // Si está siguiendo al jugador, llamar a la función FollowPlayer
             FollowPlayer();
         }
         else
         {
-            // Si no está siguiendo al jugador, continuar patrullando
             if (!isWaiting)
             {
                 MoveTowardsNode();
@@ -66,13 +64,11 @@ public class EnemyMovement : MonoBehaviour
 
     void FollowPlayer()
     {
-        // Seguir al jugador directamente
         if (player != null)
         {
             Vector3 directionToPlayer = (player.position - transform.position).normalized;
             transform.position += directionToPlayer * speed * Time.deltaTime;
 
-            // Actualizar la rotación para que el enemigo mire hacia el jugador
             transform.LookAt(player.position);
         }
     }
