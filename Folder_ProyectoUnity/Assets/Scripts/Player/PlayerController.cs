@@ -395,7 +395,7 @@ public class PlayerController : MonoBehaviour
     {
         if (playerState == PlayerState.Crouching)
         {
-            if (!Physics.Raycast(transform.position + capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2f), Vector3.up, 1f))
+            if (!Physics.Raycast(transform.position + capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2f), Vector3.up, 2f))
             {
                 playerState = PlayerState.Idle;
                 animator.SetBool("IsCrouched", false);
