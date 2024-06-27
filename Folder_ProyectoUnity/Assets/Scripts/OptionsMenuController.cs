@@ -42,7 +42,7 @@ public class OptionsMenuController : MonoBehaviour
         optionsCanvasGroup.alpha = 0;
         optionsCanvasGroup.interactable = false;
         optionsCanvasGroup.blocksRaycasts = false;
-
+        block.SetActive(false);
         buttonsmenú.alpha = 1;
         buttonsmenú.interactable = true;
         buttonsmenú.blocksRaycasts = true;
@@ -82,6 +82,7 @@ public class OptionsMenuController : MonoBehaviour
     }
     public void SlideMenuLeft()
     {
+        block.SetActive(true);
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         _audio.PlayOneShot(menuClips.clipSounds[2]);
         ui_menu.DOAnchorPosX(visibleMenuPosition.x, 1.5f).SetEase(Ease.InSine);
@@ -89,6 +90,7 @@ public class OptionsMenuController : MonoBehaviour
 
     public void SlideMenuRight()
     {
+        block.SetActive(false);
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         _audio.PlayOneShot(menuClips.clipSounds[2]);
         ui_menu.DOAnchorPosX(hiddenMenuPosition.x, 1.5f).SetEase(Ease.InSine);
@@ -103,7 +105,7 @@ public class OptionsMenuController : MonoBehaviour
             rightImage.rectTransform.DOMoveX(rightImage.rectTransform.position.x + moveDistance, moveDuration).SetEase(Ease.InOutQuint);
             StartCoroutine(WaitForClip());
             isMoved = true;
-
+            block.SetActive(true);
             OnImagesMoved?.Invoke();
 
         }
@@ -116,6 +118,7 @@ public class OptionsMenuController : MonoBehaviour
     }
     public void CloseGame()
     {
+        block.SetActive(true);
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         Close.rectTransform.DOMoveY(Close.rectTransform.position.y - distanceY, duration).SetEase(Ease.InBack);
         Debug.Log("Saliendo del juego...");
