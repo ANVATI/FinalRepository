@@ -13,7 +13,6 @@ public class Enemy : MonoBehaviour
 
     public float detectionRadius = 10f;
     private GameObject player; 
-
     private NavMeshAgent navMeshAgent;
 
     void Start()

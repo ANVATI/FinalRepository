@@ -6,20 +6,23 @@ public class Weapons : MonoBehaviour
 {
     public BoxCollider[] weapons;
     public GameObject[] activateWeapons;
-    public GameObject trail1;
-    public GameObject trail2;
-    public GameObject trail3;
+    public GameObject[] trails; 
+
     private AudioSource _weaponsSource;
     public AudioClip slashSound;
     public int Damage = 5;
+
     private void Awake()
     {
         _weaponsSource = GetComponents<AudioSource>()[0];
     }
+
     private void Start()
     {
         DesactivarColliders();
+        DesactivarTrails(); 
     }
+
     public void ActivarColliders()
     {
         for (int i = 0; i < weapons.Length; i++)
@@ -30,12 +33,10 @@ public class Weapons : MonoBehaviour
             }
         }
         _weaponsSource.PlayOneShot(slashSound);
-        trail1.SetActive(true);
-        trail2.SetActive(true);
-        trail3.SetActive(true);
-        Debug.Log("Se activo el arma");
-
+        ActivarTrails();
+        Debug.Log("Se activó el arma");
     }
+
     public void DesactivarColliders()
     {
         for (int i = 0; i < weapons.Length; i++)
@@ -45,11 +46,32 @@ public class Weapons : MonoBehaviour
                 weapons[i].enabled = false;
             }
         }
-        trail1.SetActive(false);
-        trail2.SetActive(false);
-        trail3.SetActive(false);
-        Debug.Log("Se desactivo el arma");
+        DesactivarTrails(); 
+        Debug.Log("Se desactivó el arma");
     }
+
+    private void ActivarTrails()
+    {
+        for (int i = 0; i < trails.Length; i++)
+        {
+            if (trails[i] != null)
+            {
+                trails[i].SetActive(true);
+            }
+        }
+    }
+
+    private void DesactivarTrails()
+    {
+        for (int i = 0; i < trails.Length; i++)
+        {
+            if (trails[i] != null)
+            {
+                trails[i].SetActive(false);
+            }
+        }
+    }
+
     public void ActivateWeapons(int index)
     {
         for (int i = 0; i < activateWeapons.Length; i++)

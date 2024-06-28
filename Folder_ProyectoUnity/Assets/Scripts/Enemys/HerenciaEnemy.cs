@@ -12,6 +12,7 @@ public class HerenciaEnemy : MonoBehaviour
     protected AudioSource _audio;
     protected int currentHP; 
     protected int maxHP;
+    public int damage;
     protected int pushingForce;
 
     protected virtual void Awake()

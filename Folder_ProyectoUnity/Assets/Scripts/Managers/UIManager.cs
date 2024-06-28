@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
-using System;
+using System.Collections;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class UIManager : MonoBehaviour
     public GameObject VolumeSettings;
     public bool isOpen = false;
 
+    [Header("Fade")]
+    [SerializeField] private Image fadeImage;
+
     private void Start()
     {
         dialoguePanel.SetActive(false);
@@ -38,6 +42,7 @@ public class UIManager : MonoBehaviour
             playerController = PlayerController.Instance;
         }
     }
+
     private void Update()
     {
         if (playerController != null)
@@ -45,9 +50,9 @@ public class UIManager : MonoBehaviour
             UpdateStaminaBar();
             UpdateLifeBar();
             UpdateRageBar();
-            
         }
     }
+
     public void NextDialogue(InputAction.CallbackContext context)
     {
         if (context.performed && dialoguePanel.activeSelf)
@@ -55,6 +60,7 @@ public class UIManager : MonoBehaviour
             DisplayNextDialogue();
         }
     }
+
     public void OpenOptions(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -73,18 +79,21 @@ public class UIManager : MonoBehaviour
                 isOpen = true;
             }
         }
-    }   
+    }
+
     public void CloseOption()
     {
         ApperOptions.SetActive(false);
         Time.timeScale = 1;
         isOpen = false;
     }
+
     public void OpenVolumeSettings()
     {
         VolumeSettings.SetActive(true);
         ApperOptions.SetActive(false);
     }
+
     public void CloseVolumeSettings()
     {
         ApperOptions.SetActive(true);
@@ -137,7 +146,7 @@ public class UIManager : MonoBehaviour
         {
             characterNameText.text = dialogue.dialogueEntries[currentDialogueIndex].characterName;
             dialogueText.text = dialogue.dialogueEntries[currentDialogueIndex].dialogueText;
-            dialogueImage1.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage1;         
+            dialogueImage1.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage1;
             currentDialogueIndex++;
         }
         else
@@ -151,4 +160,8 @@ public class UIManager : MonoBehaviour
         dialoguePanel.SetActive(false);
     }
 
+    public void Fade()
+    {
+        fadeImage.DOFade(1, 5);
+    }
 }

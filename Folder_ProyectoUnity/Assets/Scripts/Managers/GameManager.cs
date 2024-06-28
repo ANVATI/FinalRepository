@@ -7,9 +7,16 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
+    public PlayerActions playeractions;
+    public GameObject wall;
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
     private void OnEnable()
     {
         OptionsMenuController.OnImagesMoved += ChangeScene;
+        playeractions.onPlayerEnterBossArea += CloseCave;
     }
 
     private void OnDisable()
@@ -20,11 +27,30 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(WaitForChangeScene());
     }
-
+    public void CloseCave(bool close)
+    {
+        if (close)
+        {
+            wall.SetActive(true);
+        }
+    }
+    public void ReturnMenúDie()
+    {
+        StartCoroutine(WaitForReturn());
+    }
     IEnumerator WaitForChangeScene()
     {
+        Debug.Log("cambiando de escena");
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Nivel");
+    }
+
+    IEnumerator WaitForReturn()
+    {
+        yield return new WaitForSeconds(6f);
+        SceneManager.LoadScene("Menú");
+        Time.timeScale = 1;
+
     }
     public void RestartLvl()
     {

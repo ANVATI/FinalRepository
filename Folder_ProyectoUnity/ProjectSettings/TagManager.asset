@@ -7,6 +7,8 @@ TagManager:
   - Obstacle
   - Arma
   - Enemy
+  - Boss
+  - Zone
   layers:
   - Default
   - TransparentFX

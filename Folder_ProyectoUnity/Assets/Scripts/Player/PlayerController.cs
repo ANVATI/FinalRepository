@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private bool canAttack = true;
     private bool isRolling = false;
     public bool isAttacking = false;
-
+    public bool isDead = false;
     private enum PlayerState
     {
         Idle,
@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        isDead = false;
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
@@ -63,11 +64,6 @@ public class PlayerController : MonoBehaviour
         playerAction = GetComponent<PlayerActions>();
         walkAudioSource = GetComponents<AudioSource>()[1];
         _audioSource = GetComponents<AudioSource>()[0];
-    }
-
-    private void Update()
-    {
-        //Debug.Log(playerAttributes.Stamina);
     }
 
     void FixedUpdate()
@@ -104,11 +100,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         movementInput = context.ReadValue<Vector2>();
     }
 
     public void OnRunning(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (playerState != PlayerState.Crouching && playerState != PlayerState.Attacking && playerState != PlayerState.Rage && !isAttacking)
         {
             if (context.started && (movementInput.x != 0 || movementInput.y != 0) && playerAttributes.Stamina > 0)
@@ -125,6 +123,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnRolling(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (playerState != PlayerState.Crouching && playerAttributes.Stamina > 5 && !isAttacking)
         {
             if (context.started && playerState == PlayerState.Running)
@@ -137,6 +136,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnCrouched(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (context.started && !isAttacking)
         {
             ToggleCrouch();
@@ -145,6 +145,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnSecondaryAttack(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (context.performed && canAttack && playerState != PlayerState.Rolling)
         {
             if (playerAttributes.Stamina > 10 && playerState != PlayerState.Crouching && playerState != PlayerState.CrouchingAttack)
@@ -156,6 +157,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttackStand(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (context.performed && canAttack && playerState != PlayerState.Rolling)
         {
             if (playerState == PlayerState.Crouching && playerAttributes.Stamina > 5)
@@ -171,6 +173,7 @@ public class PlayerController : MonoBehaviour
 
     public void RageMode(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (playerState != PlayerState.Crouching && playerAction.GetEnemyKillCount() >= 10 && !isAttacking)
         {
             if (context.performed)
@@ -185,6 +188,7 @@ public class PlayerController : MonoBehaviour
 
     public void Taunt(InputAction.CallbackContext context)
     {
+        if (isDead) return;
         if (playerState == PlayerState.Idle)
         {
             if (context.performed)
@@ -283,9 +287,10 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+
         if (playerState == PlayerState.Rage
             || playerState == PlayerState.Taunting || playerState == PlayerState.Rolling
-            || isRolling)
+            || isRolling || isDead)
         {
             return;
         }
@@ -319,7 +324,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerAttributes.Stamina > 0 && !playerAction.inRageMode)
                 {
-                    DecreaseStamina(0.065f);
+                    DecreaseStamina(0.05f);
                     playerAttributes.currentSpeed += playerAttributes.acceleration * Time.fixedDeltaTime;
                     playerAttributes.currentSpeed = Mathf.Clamp(playerAttributes.currentSpeed, 0f, playerAttributes.maxSpeed);
                 }
@@ -360,8 +365,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
     }
-
-
 
     private void UpdateAnimation()
     {
@@ -411,6 +414,15 @@ public class PlayerController : MonoBehaviour
             capsuleCollider.center = new Vector3(capsuleCollider.center.x, capsuleCollider.center.y / 1.5f, capsuleCollider.center.z);
         }
     }
+
+    public void PlayerDead()
+    {
+        isDead = true;
+        animator.SetTrigger("Dead");
+        rb.constraints |= RigidbodyConstraints.FreezePositionZ;
+        rb.constraints |= RigidbodyConstraints.FreezePositionX;
+
+    }
     private void IncreaseStamina(float amount)
     {
         playerAttributes.Stamina = Mathf.Min(playerAttributes.Stamina + amount, 100);
@@ -422,7 +434,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag =="Enemy")
+        if (collision.gameObject.tag =="Enemy" || collision.gameObject.tag == "Boss")
         {
             rb.constraints |= RigidbodyConstraints.FreezePositionY;
         }

@@ -1,25 +1,47 @@
-using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using System.Collections;
 
 public class PlayerActions : MonoBehaviour
 {
+    public Action<bool> onPlayerEnterBossArea;
     public Action onRage;
     public PlayerAttributes attributes;
+    public GameManager manager;
     public PlayerController playerController;
+    public UIManager UI;
     private float remainingRageDuration = 0f;
     private int enemyKillCount = 0;
     public bool inRageMode;
     public AnimationCurve scaleCurve;
-    private Coroutine rageCoroutine;
+    private float currentHP;
+    public bool inZone = false;
 
     private void Start()
     {
+        inZone = false;
+
         if (playerController == null)
         {
             playerController = PlayerController.Instance;
         }
+
+        if (attributes == null)
+        {
+            attributes = GetComponent<PlayerAttributes>();
+        }
+
+        if (manager == null)
+        {
+            manager = FindObjectOfType<GameManager>();
+        }
+        if (UI == null)
+        {
+            UI = FindObjectOfType<UIManager>();
+        }
+
+        currentHP = attributes.Life;
     }
 
     private void Awake()
@@ -29,7 +51,7 @@ public class PlayerActions : MonoBehaviour
         attributes.maxSpeed = 10f;
         attributes.acceleration = 2.5f;
         attributes.currentSpeed = 2f;
-        attributes.Life = 200f;
+        attributes.Life = 30f;
         attributes.walkSpeed = 5.0f;
         attributes.crouchSpeed = 3.0f;
         attributes.rollForce = 7.5f;
@@ -67,11 +89,7 @@ public class PlayerActions : MonoBehaviour
         playerController.playerAttributes.Stamina = 100f;
         ScaleForDuration(Vector3.one * 1.5f, attributes.RageDuration);
 
-        if (rageCoroutine != null)
-        {
-            StopCoroutine(rageCoroutine);
-        }
-        rageCoroutine = StartCoroutine(ReduceRageOverTime(attributes.RageDuration));
+        StartCoroutine(ReduceRageOverTime(attributes.RageDuration));
     }
 
     private IEnumerator ReduceRageOverTime(float duration)
@@ -122,6 +140,44 @@ public class PlayerActions : MonoBehaviour
         if (enemyKillCount < 10)
         {
             enemyKillCount++;
+        }
+    }
+
+    public void TakeDamageFromBoss(int bossDamage)
+    {
+        currentHP -= bossDamage;
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        playerController.PlayerDead();
+        manager.ReturnMenúDie();
+        UI.Fade();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Boss"))
+        {
+            Boss boss = other.gameObject.GetComponentInParent<Boss>();
+            Debug.Log("Se aplicó el daño del boss");
+            Debug.Log(currentHP);
+            Debug.Log(boss.damage);
+            if (boss != null)
+            {
+                TakeDamageFromBoss(boss.damage);
+            }
+        }
+        if (other.gameObject.CompareTag("Zone"))
+        {
+            inZone = true;
+            Destroy(other);
+            onPlayerEnterBossArea?.Invoke(true); 
         }
     }
 }

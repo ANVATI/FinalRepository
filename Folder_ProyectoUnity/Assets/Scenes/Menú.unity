@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 26602507}
   - component: {fileID: 26602508}
   m_Layer: 5
-  m_Name: w
+  m_Name: Music
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -477,13 +477,25 @@ MonoBehaviour:
   m_FillRect: {fileID: 2081933294}
   m_HandleRect: {fileID: 2069829016}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.00000001
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1847540704}
+        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+        m_MethodName: SetVolumeMusic
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &50157676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,7 +1819,7 @@ GameObject:
   - component: {fileID: 441911808}
   - component: {fileID: 441911809}
   m_Layer: 5
-  m_Name: w (1)
+  m_Name: master
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1880,13 +1892,25 @@ MonoBehaviour:
   m_FillRect: {fileID: 1153656127}
   m_HandleRect: {fileID: 984335974}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.00000001
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1847540704}
+        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+        m_MethodName: SetVolumeMaster
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &454986208
 GameObject:
   m_ObjectHideFlags: 0
@@ -6561,7 +6585,7 @@ GameObject:
   - component: {fileID: 1790228460}
   - component: {fileID: 1790228461}
   m_Layer: 5
-  m_Name: w (2)
+  m_Name: sfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6634,13 +6658,25 @@ MonoBehaviour:
   m_FillRect: {fileID: 1111187516}
   m_HandleRect: {fileID: 1172469023}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.000001
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1847540704}
+        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+        m_MethodName: SetVolumeSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1847540701
 GameObject:
   m_ObjectHideFlags: 0
@@ -6651,6 +6687,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1847540703}
   - component: {fileID: 1847540702}
+  - component: {fileID: 1847540704}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -6770,6 +6807,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1847540704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847540701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fae6322d1885d68419bc1147af65fd4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myMixer: {fileID: 24100000, guid: eb5e68fc641a4a14ab092a8ca41fef01, type: 2}
+  sliderMaster: {fileID: 441911809}
+  sliderMusic: {fileID: 26602508}
+  sliderSFX: {fileID: 1790228461}
+  audioSettings: {fileID: 11400000, guid: c9eceb2017206dc40b502f9c22be0dc8, type: 2}
 --- !u!1 &1907603898
 GameObject:
   m_ObjectHideFlags: 0
@@ -6797,7 +6851,7 @@ RectTransform:
   m_GameObject: {fileID: 1907603898}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 19.293766, y: 10.686005, z: 10.481292}
+  m_LocalScale: {x: 19.293766, y: 11.093142, z: 10.481292}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2096486257}
