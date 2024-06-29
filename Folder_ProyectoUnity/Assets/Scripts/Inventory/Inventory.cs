@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class Inventory : MonoBehaviour
 {
@@ -56,15 +57,23 @@ public class Inventory : MonoBehaviour
     void Update()
     {
         timeToChange += Time.deltaTime;
+    }
 
-        if (!isChangingWeapon && timeToChange >= 1.5f)
+    public void OnNextWeapon(InputAction.CallbackContext context)
+    {
+        if (context.performed && !isChangingWeapon)
         {
-            if (Input.GetKeyDown(KeyCode.Q) && _player.ChangeWeapon())
-            {
-                StartCoroutine(DelayNextWeapon());
-                timeToChange = 0;
-            }
-            else if (Input.GetKeyDown(KeyCode.E) && _player.ChangeWeapon())
+            if (_player.ChangeWeapon() && timeToChange >= 1.5f)
+            StartCoroutine(DelayNextWeapon());
+            timeToChange = 0;
+        }
+    }
+
+    public void OnPreviousWeapon(InputAction.CallbackContext context)
+    {
+        if (context.performed && !isChangingWeapon)
+        {
+            if (_player.ChangeWeapon() && timeToChange >= 1.5f)
             {
                 StartCoroutine(DelayBeforeWeapon());
                 timeToChange = 0;
@@ -103,6 +112,7 @@ public class Inventory : MonoBehaviour
             if (nuevoIndice != indiceActual)
             {
                 indiceActual = nuevoIndice;
+
                 ActualizarInterfaz();
             }
         }
@@ -113,6 +123,7 @@ public class Inventory : MonoBehaviour
         isChangingWeapon = true;
         yield return new WaitForSeconds(0.5f);
         CambiarArmaSiguiente();
+        yield return new WaitForSeconds(2f);
         isChangingWeapon = false;
     }
 
@@ -121,6 +132,7 @@ public class Inventory : MonoBehaviour
         isChangingWeapon = true;
         yield return new WaitForSeconds(0.5f);
         CambiarArmaAnterior();
+        yield return new WaitForSeconds(2f);
         isChangingWeapon = false;
     }
 

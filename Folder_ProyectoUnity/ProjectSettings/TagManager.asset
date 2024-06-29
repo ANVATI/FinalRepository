@@ -9,6 +9,10 @@ TagManager:
   - Enemy
   - Boss
   - Zone
+  - BossHand
+  - BossArea
+  - Bosque
+  - Aldea
   layers:
   - Default
   - TransparentFX

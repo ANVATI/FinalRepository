@@ -5,53 +5,44 @@ using System.Collections;
 
 public class PlayerActions : MonoBehaviour
 {
-    public Action<bool> onPlayerEnterBossArea;
+    public Action onPlayerEnterBossArea;
     public Action onRage;
+    public Action onKillAllGoblins;
+    public Action onKillAllViking;
+
+    public Action OnGoblinArea;
+    public Action OnAldeaArea;
+
+    private bool GlobinArea;
+    private bool AldeaArea;
+
     public PlayerAttributes attributes;
     public GameManager manager;
     public PlayerController playerController;
     public UIManager UI;
     private float remainingRageDuration = 0f;
-    private int enemyKillCount = 0;
+    private int enemyKillCount;
     public bool inRageMode;
     public AnimationCurve scaleCurve;
-    private float currentHP;
+    public float currentHP;
     public bool inZone = false;
 
     private void Start()
     {
         inZone = false;
-
-        if (playerController == null)
-        {
-            playerController = PlayerController.Instance;
-        }
-
-        if (attributes == null)
-        {
-            attributes = GetComponent<PlayerAttributes>();
-        }
-
-        if (manager == null)
-        {
-            manager = FindObjectOfType<GameManager>();
-        }
-        if (UI == null)
-        {
-            UI = FindObjectOfType<UIManager>();
-        }
-
+        playerController = PlayerController.Instance;
+        manager = FindObjectOfType<GameManager>();
+        UI = FindObjectOfType<UIManager>();
         currentHP = attributes.Life;
     }
 
     private void Awake()
     {
-        // Pruebas
         Debug.Log("Valores Restaurados");
         attributes.maxSpeed = 10f;
         attributes.acceleration = 2.5f;
         attributes.currentSpeed = 2f;
-        attributes.Life = 30f;
+        attributes.Life = 40f;
         attributes.walkSpeed = 5.0f;
         attributes.crouchSpeed = 3.0f;
         attributes.rollForce = 7.5f;
@@ -88,7 +79,6 @@ public class PlayerActions : MonoBehaviour
     {
         playerController.playerAttributes.Stamina = 100f;
         ScaleForDuration(Vector3.one * 1.5f, attributes.RageDuration);
-
         StartCoroutine(ReduceRageOverTime(attributes.RageDuration));
     }
 
@@ -143,8 +133,9 @@ public class PlayerActions : MonoBehaviour
         }
     }
 
-    public void TakeDamageFromBoss(int bossDamage)
+    public void TakeDamageFromBoss(float bossDamage)
     {
+        if (playerController.isDead) return;
         currentHP -= bossDamage;
 
         if (currentHP <= 0)
@@ -155,6 +146,7 @@ public class PlayerActions : MonoBehaviour
 
     public void Die()
     {
+        if (playerController.isDead) return; 
         playerController.PlayerDead();
         manager.ReturnMenúDie();
         UI.Fade();
@@ -162,22 +154,45 @@ public class PlayerActions : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Boss"))
+        if (other.gameObject.CompareTag("BossHand"))
         {
             Boss boss = other.gameObject.GetComponentInParent<Boss>();
-            Debug.Log("Se aplicó el daño del boss");
-            Debug.Log(currentHP);
-            Debug.Log(boss.damage);
             if (boss != null)
             {
                 TakeDamageFromBoss(boss.damage);
             }
         }
-        if (other.gameObject.CompareTag("Zone"))
+        else if (other.gameObject.CompareTag("BossArea"))
+        {
+            Boss boss = other.gameObject.GetComponentInParent<Boss>();
+            if (boss != null)
+            {
+                TakeDamageFromBoss(boss.damage * 2f);
+            }
+        }
+        else if (other.gameObject.CompareTag("Zone"))
         {
             inZone = true;
-            Destroy(other);
-            onPlayerEnterBossArea?.Invoke(true); 
+            Destroy(other.gameObject);
+            onPlayerEnterBossArea?.Invoke();
+        }
+        else if (other.gameObject.CompareTag("Bosque") && !GlobinArea)
+        {
+            OnGoblinArea?.Invoke();
+            GlobinArea = true;
+        }
+        else if (other.gameObject.CompareTag("Aldea") && !AldeaArea)
+        {
+            OnAldeaArea?.Invoke();
+            AldeaArea = true;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            TakeDamageFromBoss(0.01f); 
         }
     }
 }

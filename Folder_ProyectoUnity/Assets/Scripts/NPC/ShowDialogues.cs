@@ -3,9 +3,17 @@ public class ShowDialogue : MonoBehaviour
 {
     public UIManager uiManager;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.gameObject.tag  == "Player")
+        if (other.gameObject.tag == "Player")
+        {
+            uiManager.EndDialogue();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
         {
             uiManager.StartDialogue();
         }

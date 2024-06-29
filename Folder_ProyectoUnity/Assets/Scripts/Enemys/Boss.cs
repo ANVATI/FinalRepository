@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -13,13 +12,14 @@ public class Boss : HerenciaEnemy
     private MaterialPropertyBlock mpb;
     private float dissolveAmount = 0f;
     private float dissolveSpeed = 1f;
+    private int totalDamageTaken = 0;
     private float timer;
 
     [Header("Boss Movement")]
     public Transform objetivo;
     public float velocidad;
     public NavMeshAgent IA;
-    private bool playerInArea = false;
+    private bool isSpecialAttacking = false;
 
     [Header("Boss Attack")]
     public BoxCollider handBoss;
@@ -28,72 +28,96 @@ public class Boss : HerenciaEnemy
     private bool isDead = false;
     private bool hasTaunted = false;
 
+    [Header("Class References")]
     public PlayerController player;
     public PlayerActions actionsPlayer;
+    public AudioSource footSteps;
 
+    [Header("SpecialAttack")]
+    public GameObject Area;
+    public GameObject colisionAttack;
+
+    [Header("ActivateSound")]
+    public GameObject musicCave;
     protected void Start()
     {
-        damage = 10;
-        maxHP = 40;
+        maxHP = 30;
         currentHP = maxHP;
         pushingForce = 20;
         enemyRenderer = GetComponentInChildren<Renderer>();
-        actionsPlayer = FindObjectOfType<PlayerActions>();
+        //actionsPlayer = FindObjectOfType<PlayerActions>();
         mpb = new MaterialPropertyBlock();
         IA.speed = velocidad;
         DesactivarColliderBoss();
         StopAllBossActions();
 
+        footSteps = GetComponents<AudioSource>()[1];
     }
 
     private void OnEnable()
     {
-        actionsPlayer.onPlayerEnterBossArea += HandlePlayerEnterBossArea;
+        actionsPlayer.onPlayerEnterBossArea += ResumeBossActions;
+        actionsPlayer.onPlayerEnterBossArea += HandleSounds;
+        actionsPlayer.onPlayerEnterBossArea += TauntBoss;
     }
 
     private void OnDisable()
     {
-        actionsPlayer.onPlayerEnterBossArea -= HandlePlayerEnterBossArea;
+        actionsPlayer.onPlayerEnterBossArea -= ResumeBossActions;
+        actionsPlayer.onPlayerEnterBossArea -= HandleSounds;
+        actionsPlayer.onPlayerEnterBossArea -= TauntBoss;
     }
 
     protected override void Update()
     {
         if (!isDead && actionsPlayer.inZone)
         {
+            musicCave.SetActive(true);
             ResumeBossActions();
-            HandleMovement();
-            HandleSounds();
-            TauntBoss();
+        }
+
+        if (Time.timeScale <= 0 && footSteps.isPlaying)
+        {
+            footSteps.Stop();
         }
     }
 
     private void HandleMovement()
     {
-        if (objetivo != null && !isDead)
+        if (objetivo != null && !isDead && !isSpecialAttacking)
         {
-            IA.SetDestination(objetivo.position);
             if (!isAttacking && !isTakingDamage)
             {
+                IA.SetDestination(objetivo.position);
                 animator.SetBool("BossRun", true);
                 IA.isStopped = false;
+
+                if (!footSteps.isPlaying && Time.timeScale > 0 && !player.isDead && !isSpecialAttacking)
+                {
+                    footSteps.Play();
+                }
             }
-        }
-        else
-        {
-            animator.SetBool("BossRun", false);
-            IA.isStopped = true;
+            else
+            {
+                animator.SetBool("BossRun", false);
+                IA.isStopped = true;
+
+                if (footSteps.isPlaying)
+                {
+                    footSteps.Stop();
+                }
+            }
         }
     }
 
     private void HandleSounds()
     {
-        if (timer >= 10 && !player.isDead)
+        timer = timer + Time.deltaTime;
+        if (timer >= 8 && !player.isDead)
         {
             _audio.PlayOneShot(BossSounds.clipSounds[UnityEngine.Random.Range(5, 8)]);
             timer = 0;
         }
-
-        timer += Time.deltaTime;
     }
 
     public void TakeDamage(int damage, Vector3 attackerPosition)
@@ -101,6 +125,15 @@ public class Boss : HerenciaEnemy
         if (isDead) return;
 
         currentHP -= damage;
+        totalDamageTaken += damage;
+
+        int damageThreshold = 10;
+        if (totalDamageTaken >= damageThreshold && !isSpecialAttacking)
+        {
+            StartCoroutine(SpecialAttackZone());
+            totalDamageTaken = 0;
+        }
+
         if (currentHP <= 0)
         {
             Kill();
@@ -122,6 +155,10 @@ public class Boss : HerenciaEnemy
         StopAllCoroutines();
         animator.SetBool("BossAttack", false);
         animator.SetBool("BossRun", false);
+        if (footSteps.isPlaying)
+        {
+            footSteps.Stop();
+        }
         StartCoroutine(DieBoss());
     }
 
@@ -129,19 +166,10 @@ public class Boss : HerenciaEnemy
     {
         if (collision.gameObject.CompareTag("Player") && !isDead)
         {
-            playerInArea = true;
-            if (!isAttacking && !isTakingDamage)
+            if (!isAttacking && !isTakingDamage && !player.isDead)
             {
                 StartCoroutine(BossAttack());
             }
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            playerInArea = false;
         }
     }
 
@@ -149,6 +177,7 @@ public class Boss : HerenciaEnemy
     {
         if (player.isDead && !hasTaunted)
         {
+            footSteps.Stop();
             StartCoroutine(SoundClip());
         }
     }
@@ -180,16 +209,31 @@ public class Boss : HerenciaEnemy
     {
         isAttacking = true;
         IA.isStopped = true;
-        animator.SetBool("BossAttack", true);
 
-        yield return new WaitForSeconds(2f);
-
-        animator.SetBool("BossAttack", false);
+        if (!isSpecialAttacking)
+        {
+            animator.SetBool("BossAttack", true);
+            yield return new WaitForSeconds(1f);
+            _audio.PlayOneShot(BossSounds.clipSounds[9]);
+            yield return new WaitForSeconds(2f);
+            animator.SetBool("BossAttack", false);
+        }
 
         yield return new WaitForSeconds(0.1f);
 
         isAttacking = false;
-        IA.isStopped = false;
+
+        if (!isDead && !isSpecialAttacking)
+        {
+            IA.isStopped = false;
+            HandleMovement();
+        }
+
+        if (totalDamageTaken >= 10 && !isSpecialAttacking)
+        {
+            StartCoroutine(SpecialAttackZone());
+            totalDamageTaken = 0;
+        }
     }
 
     IEnumerator DieBoss()
@@ -231,22 +275,48 @@ public class Boss : HerenciaEnemy
         animator.SetBool("BossRun", false);
         animator.SetBool("BossAttack", false);
         IA.isStopped = true;
+        if (footSteps.isPlaying)
+        {
+            footSteps.Stop();
+        }
     }
 
     private void ResumeBossActions()
     {
         IA.isStopped = false;
+        HandleMovement();
+        HandleSounds();
+        TauntBoss();
     }
 
-    private void HandlePlayerEnterBossArea(bool entered)
+    IEnumerator SpecialAttackZone()
     {
-        if (entered)
+        isSpecialAttacking = true;
+        IA.isStopped = true;
+        animator.SetBool("BossRun", false);
+        animator.SetBool("BossAttack", false);
+        Area.SetActive(true);
+        _audio.PlayOneShot(BossSounds.clipSounds[11]);
+
+        yield return new WaitForSeconds(1f);
+
+        animator.SetBool("SpecialAttack", true);
+
+        yield return new WaitForSeconds(2f);
+        colisionAttack.SetActive(true);
+        _audio.PlayOneShot(BossSounds.clipSounds[10]);
+
+        yield return new WaitForSeconds(1f);
+
+        animator.SetBool("SpecialAttack", false);
+        Area.SetActive(false);
+        colisionAttack.SetActive(false);
+
+        isSpecialAttacking = false;
+        if (!isDead && !player.isDead)
         {
-            Debug.Log("El jugador entró en el área del Boss");
-        }
-        else
-        {
-            Debug.Log("El jugador salió del área del Boss");
+            IA.isStopped = false;
+            HandleMovement();
         }
     }
 }

@@ -1,11 +1,12 @@
 using UnityEngine;
-
 public class CameraOrbit : MonoBehaviour
 {
     private Vector2 angle = new Vector2(90 * Mathf.Deg2Rad, 0);
     private new Camera camera;
     private Vector2 nearPlaneSize;
     public UIManager managerUI;
+    public PlayerActions playerActions;
+    private bool canMoveCamera = true;
 
     public Transform follow;
     public float maxDistance = 10f;
@@ -13,10 +14,22 @@ public class CameraOrbit : MonoBehaviour
     public float zoomSpeed = 5f;
     public float minDistance = 2f;
     public float currentDistance;
+
     void Start()
     {
+        //playerActions = FindObjectOfType<PlayerActions>();
         camera = GetComponent<Camera>();
         CalculateNearPlaneSize();
+        canMoveCamera = true;
+    }
+    private void OnEnable()
+    {
+        playerActions.onPlayerEnterBossArea += CameraTrackDistance;
+    }
+
+    private void OnDisable()
+    {
+        playerActions.onPlayerEnterBossArea -= CameraTrackDistance;
     }
     void Update()
     {
@@ -43,8 +56,16 @@ public class CameraOrbit : MonoBehaviour
             angle.y += ver * Mathf.Deg2Rad * sensitivity.y;
             angle.y = Mathf.Clamp(angle.y, -80 * Mathf.Deg2Rad, 80 * Mathf.Deg2Rad);
         }
-        currentDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-        currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
+        if (canMoveCamera)
+        {
+            currentDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
+        }
+    }
+
+    public void CameraTrackDistance()
+    {
+        currentDistance = maxDistance;
     }
     private void CalculateNearPlaneSize()
     {

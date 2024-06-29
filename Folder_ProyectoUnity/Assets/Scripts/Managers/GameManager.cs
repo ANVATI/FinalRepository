@@ -7,8 +7,8 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerActions playeractions;
-    public GameObject wall;
+    //[SerializeField] PlayerActions playeractions;
+    //[SerializeField] GameObject wall;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -16,17 +16,19 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         OptionsMenuController.OnImagesMoved += ChangeScene;
-        playeractions.onPlayerEnterBossArea += CloseCave;
+        //playeractions.onPlayerEnterBossArea += CloseCave;
     }
 
     private void OnDisable()
     {
         OptionsMenuController.OnImagesMoved -= ChangeScene;
+        //playeractions.onPlayerEnterBossArea -= CloseCave;
     }
     public void ChangeScene()
     {
         StartCoroutine(WaitForChangeScene());
     }
+    /*
     public void CloseCave(bool close)
     {
         if (close)
@@ -34,13 +36,13 @@ public class GameManager : MonoBehaviour
             wall.SetActive(true);
         }
     }
+    */
     public void ReturnMenúDie()
     {
         StartCoroutine(WaitForReturn());
     }
     IEnumerator WaitForChangeScene()
     {
-        Debug.Log("cambiando de escena");
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Nivel");
     }
@@ -62,5 +64,4 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Menú");
         Time.timeScale = 1;
     }
-
 }

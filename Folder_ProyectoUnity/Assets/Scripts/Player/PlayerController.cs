@@ -68,9 +68,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleMovement();
-        UpdateAnimation();
-        AudioMovement();
+        if (!isDead)
+        {
+            HandleMovement();
+            UpdateAnimation();
+            AudioMovement();
+        }
     }
 
     public void AudioMovement()
@@ -79,11 +82,11 @@ public class PlayerController : MonoBehaviour
         {
             if (playerState == PlayerState.Running)
             {
-                walkAudioSource.clip = _actionSounds.clipSounds[4]; 
+                walkAudioSource.clip = _actionSounds.clipSounds[4];
             }
             else
             {
-                walkAudioSource.clip = _actionSounds.clipSounds[3]; 
+                walkAudioSource.clip = _actionSounds.clipSounds[3];
             }
 
             if (!walkAudioSource.isPlaying)
@@ -96,7 +99,6 @@ public class PlayerController : MonoBehaviour
             walkAudioSource.Stop();
         }
     }
-
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -119,7 +121,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
 
     public void OnRolling(InputAction.CallbackContext context)
     {
@@ -181,7 +182,6 @@ public class PlayerController : MonoBehaviour
                 _audioSource.PlayOneShot(_actionSounds.clipSounds[0]);
                 playerAction.TriggerRage();
                 StartCoroutine(Rage());
-                //playerAttributes.Stamina = 100f;
             }
         }
     }
@@ -194,7 +194,6 @@ public class PlayerController : MonoBehaviour
             if (context.performed)
             {
                 StartCoroutine(Taunt());
-
             }
         }
     }
@@ -215,6 +214,7 @@ public class PlayerController : MonoBehaviour
         isRolling = false;
         canAttack = true;
     }
+
     private IEnumerator Attack()
     {
         isAttacking = true;
@@ -230,15 +230,16 @@ public class PlayerController : MonoBehaviour
         canAttack = true;
         isAttacking = false;
     }
+
     private IEnumerator SecondaryAttack()
     {
         isAttacking = true;
         playerState = PlayerState.Attacking;
-        DecreaseStamina(8); 
+        DecreaseStamina(8);
         canAttack = false;
-        animator.SetBool("Attack2", true); 
+        animator.SetBool("Attack2", true);
 
-        yield return new WaitForSeconds(1.2f); 
+        yield return new WaitForSeconds(1.2f);
 
         animator.SetBool("Attack2", false);
         playerState = movementInput != Vector2.zero ? PlayerState.Walking : PlayerState.Idle;
@@ -264,7 +265,6 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Rage()
     {
-
         playerState = PlayerState.Rage;
         animator.SetBool("RageMode", true);
 
@@ -287,14 +287,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-
-        if (playerState == PlayerState.Rage
-            || playerState == PlayerState.Taunting || playerState == PlayerState.Rolling
-            || isRolling || isDead)
+        if (isDead || playerState == PlayerState.Rage || playerState == PlayerState.Taunting || playerState == PlayerState.Rolling || isRolling)
         {
             return;
         }
-        else if(playerState == PlayerState.Attacking || playerState == PlayerState.CrouchingAttack)
+        else if (playerState == PlayerState.Attacking || playerState == PlayerState.CrouchingAttack)
         {
             rb.constraints |= RigidbodyConstraints.FreezePositionZ;
             rb.constraints |= RigidbodyConstraints.FreezePositionX;
@@ -368,10 +365,17 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimation()
     {
+        if (isDead)
+        {
+            ResetAllAnimations();
+            return;
+        }
+
         animator.SetFloat("X", movementInput.x);
         animator.SetFloat("Y", movementInput.y);
         animator.SetBool("IsRunning", playerState == PlayerState.Running);
     }
+
     public bool ChangeWeapon()
     {
         if (playerState == PlayerState.Idle && movementInput == Vector2.zero)
@@ -394,6 +398,7 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
     }
+
     private void ToggleCrouch()
     {
         if (playerState == PlayerState.Crouching)
@@ -418,15 +423,36 @@ public class PlayerController : MonoBehaviour
     public void PlayerDead()
     {
         isDead = true;
+        _audioSource.PlayOneShot(_actionSounds.clipSounds[5]);
         animator.SetTrigger("Dead");
         rb.constraints |= RigidbodyConstraints.FreezePositionZ;
         rb.constraints |= RigidbodyConstraints.FreezePositionX;
-
+        rb.velocity = Vector3.zero;
+        walkAudioSource.Stop();
+        StopAllCoroutines();
+        ResetAllAnimations();
     }
+
+    private void ResetAllAnimations()
+    {
+        animator.SetBool("IsRolling", false);
+        animator.SetBool("Attack1", false);
+        animator.SetBool("Attack2", false);
+        animator.SetBool("AttackCrouch", false);
+        animator.SetBool("RageMode", false);
+        animator.SetBool("Taunt", false);
+        animator.SetBool("IsCrouched", false);
+        animator.SetBool("Unequip", false);
+        animator.SetBool("IsRunning", false); 
+        animator.SetFloat("X", 0);
+        animator.SetFloat("Y", 0);
+    }
+
     private void IncreaseStamina(float amount)
     {
         playerAttributes.Stamina = Mathf.Min(playerAttributes.Stamina + amount, 100);
     }
+
     private void DecreaseStamina(float amount)
     {
         playerAttributes.Stamina = Mathf.Max(playerAttributes.Stamina - amount, 0);
@@ -434,7 +460,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag =="Enemy" || collision.gameObject.tag == "Boss")
+        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Boss")
         {
             rb.constraints |= RigidbodyConstraints.FreezePositionY;
         }
@@ -443,5 +469,4 @@ public class PlayerController : MonoBehaviour
             rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionY;
         }
     }
-
 }

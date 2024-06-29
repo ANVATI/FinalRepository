@@ -1,18 +1,34 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCLogic : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    Animator _animator;
+    bool inArea;
+
+    private void Start()
     {
-        
+        _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.gameObject.CompareTag("Player"))
+        {
+            inArea = true;
+            if (inArea)
+            {
+                _animator.SetBool("Talk", true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            _animator.SetBool("Talk", false);
+            inArea = false;
+        }
     }
 }
