@@ -7,9 +7,7 @@ public class Boss : HerenciaEnemy
 {
     private Renderer enemyRenderer;
     public LibrarySounds BossSounds;
-    public AudioClip dieSound;
     public VisualEffect VFX_die;
-    private MaterialPropertyBlock mpb;
     private float dissolveAmount = 0f;
     private float dissolveSpeed = 1f;
     private int totalDamageTaken = 0;
@@ -17,8 +15,6 @@ public class Boss : HerenciaEnemy
 
     [Header("Boss Movement")]
     public Transform objetivo;
-    public float velocidad;
-    public NavMeshAgent IA;
     private bool isSpecialAttacking = false;
 
     [Header("Boss Attack")]
@@ -29,8 +25,6 @@ public class Boss : HerenciaEnemy
     private bool hasTaunted = false;
 
     [Header("Class References")]
-    public PlayerController player;
-    public PlayerActions actionsPlayer;
     public AudioSource footSteps;
 
     [Header("SpecialAttack")]
@@ -44,10 +38,10 @@ public class Boss : HerenciaEnemy
         maxHP = 30;
         currentHP = maxHP;
         pushingForce = 20;
+        speed = 5;
         enemyRenderer = GetComponentInChildren<Renderer>();
-        //actionsPlayer = FindObjectOfType<PlayerActions>();
         mpb = new MaterialPropertyBlock();
-        IA.speed = velocidad;
+        IA.speed = speed;
         DesactivarColliderBoss();
         StopAllBossActions();
 
@@ -56,21 +50,21 @@ public class Boss : HerenciaEnemy
 
     private void OnEnable()
     {
-        actionsPlayer.onPlayerEnterBossArea += ResumeBossActions;
-        actionsPlayer.onPlayerEnterBossArea += HandleSounds;
-        actionsPlayer.onPlayerEnterBossArea += TauntBoss;
+        playerAction.onPlayerEnterBossArea += ResumeBossActions;
+        playerAction.onPlayerEnterBossArea += HandleSounds;
+        playerAction.onPlayerEnterBossArea += TauntBoss;
     }
 
     private void OnDisable()
     {
-        actionsPlayer.onPlayerEnterBossArea -= ResumeBossActions;
-        actionsPlayer.onPlayerEnterBossArea -= HandleSounds;
-        actionsPlayer.onPlayerEnterBossArea -= TauntBoss;
+        playerAction.onPlayerEnterBossArea -= ResumeBossActions;
+        playerAction.onPlayerEnterBossArea -= HandleSounds;
+        playerAction.onPlayerEnterBossArea -= TauntBoss;
     }
 
-    protected override void Update()
+    private void Update()
     {
-        if (!isDead && actionsPlayer.inZone)
+        if (!isDead && playerAction.inZone)
         {
             musicCave.SetActive(true);
             ResumeBossActions();
@@ -238,7 +232,7 @@ public class Boss : HerenciaEnemy
 
     IEnumerator DieBoss()
     {
-        _audio.PlayOneShot(dieSound);
+        _audio.PlayOneShot(BossSounds.clipSounds[12]);
         animator.SetTrigger("BossDie");
         enemyCollider.enabled = false;
         yield return new WaitForSeconds(1f);

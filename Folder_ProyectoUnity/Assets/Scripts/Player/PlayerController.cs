@@ -464,7 +464,11 @@ public class PlayerController : MonoBehaviour
         {
             rb.constraints |= RigidbodyConstraints.FreezePositionY;
         }
-        else
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Boss")
         {
             rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionY;
         }
