@@ -38,7 +38,7 @@ public class Boss : HerenciaEnemy
     public GameObject musicCave;
     protected void Start()
     {
-        maxHP = 200;
+        maxHP = 20;
         currentHP = maxHP;
         pushingForce = 20;
         damage = 20;
