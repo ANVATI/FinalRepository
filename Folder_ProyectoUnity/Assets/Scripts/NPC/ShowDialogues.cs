@@ -5,7 +5,7 @@ public class ShowDialogue : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             uiManager.EndDialogue();
         }
@@ -13,7 +13,7 @@ public class ShowDialogue : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             uiManager.StartDialogue();
         }

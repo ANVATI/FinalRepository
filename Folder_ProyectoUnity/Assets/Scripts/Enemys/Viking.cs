@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using DG.Tweening;
 public class Viking : HerenciaEnemy
 {
     public Graph graph;
@@ -16,6 +16,7 @@ public class Viking : HerenciaEnemy
     public Transform playerFollow;
 
     public float chaseSpeed = 6f;
+    public BoxCollider mazo;
 
     protected bool isPaused = false;
     protected bool isChasingPlayer = false;
@@ -32,13 +33,14 @@ public class Viking : HerenciaEnemy
 
     protected override void Awake()
     {
+        mazo.enabled = false;
         base.Awake();
         speed = 2;
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = speed;
-        maxHP = 50;
+        maxHP = 60;
         currentHP = maxHP;
-        pushingForce = 10;
+        pushingForce = 20;
         InitializePatrolRoute();
         InitializeEnemy();
     }
@@ -194,6 +196,10 @@ public class Viking : HerenciaEnemy
             Vector3 direction = (transform.position - attackerPosition).normalized;
             rb.AddForce(direction * pushingForce, ForceMode.Impulse);
 
+            if (currentHP <= 20)
+            {
+                ShrinkViking();
+            }
             if (isAttacking)
             {
                 StopCoroutine(AttackCoroutine());
@@ -203,6 +209,11 @@ public class Viking : HerenciaEnemy
 
             StartCoroutine(TakeDamageCoroutine());
         }
+    }
+    private void ShrinkViking()
+    {
+        transform.DOScale(new Vector3(1.03f, 1.03f, 1.03f), 1f).SetEase(Ease.InOutQuad);
+        damage = damage + 5;
     }
 
     public void Kill()
@@ -292,7 +303,15 @@ public class Viking : HerenciaEnemy
 
     protected void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Arma")
+        if (other.gameObject.CompareTag("Sword"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage + 10, weapon.transform.position);
+            }
+        }
+        else if (other.gameObject.CompareTag("Axe"))
         {
             Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
             if (weapon != null)
@@ -300,5 +319,23 @@ public class Viking : HerenciaEnemy
                 TakeDamage(weapon.Damage, weapon.transform.position);
             }
         }
+        else if (other.gameObject.CompareTag("Axe1"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage, weapon.transform.position);
+            }
+        }
+
+    }
+
+    public void ActivarColliderViking()
+    {
+        mazo.enabled = true;
+    }
+    public void DesactivarColliderViking()
+    {
+        mazo.enabled = false;
     }
 }

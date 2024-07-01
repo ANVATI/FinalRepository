@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator WaitForReturn()
     {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(10f);
         SceneManager.LoadScene("Menú");
         Time.timeScale = 1;
 
@@ -61,6 +61,16 @@ public class GameManager : MonoBehaviour
     }
     public void ReturnMenú()
     {
+        SceneManager.LoadScene("Menú");
+        Time.timeScale = 1;
+    }
+    public void ReturnMenúAfterWin()
+    {
+        StartCoroutine(TimeToReturnMenú());
+    }
+    IEnumerator TimeToReturnMenú()
+    {
+        yield return new WaitForSeconds(10f);
         SceneManager.LoadScene("Menú");
         Time.timeScale = 1;
     }

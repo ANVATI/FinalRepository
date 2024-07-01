@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public LibrarySounds _actionSounds;
 
     private Vector2 movementInput;
-    private Rigidbody rb;
+    public Rigidbody rb;
     private Animator animator;
     private CapsuleCollider capsuleCollider;
     private Vector3 standingColliderCenter;
@@ -460,17 +460,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Boss")
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Boss"))
         {
             rb.constraints |= RigidbodyConstraints.FreezePositionY;
         }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Boss")
+        else
         {
             rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionY;
+
         }
     }
+
 }

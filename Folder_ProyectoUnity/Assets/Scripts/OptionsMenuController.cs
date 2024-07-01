@@ -36,8 +36,12 @@ public class OptionsMenuController : MonoBehaviour
 
 
     public static event Action OnImagesMoved;
+
+    [Header("ImageFade")]
+    public Image Fade;
     void Start()
     {
+        Fade.DOFade(0, 4f);
         _audio = GetComponent<AudioSource>();
         optionsCanvasGroup.alpha = 0;
         optionsCanvasGroup.interactable = false;
@@ -97,36 +101,51 @@ public class OptionsMenuController : MonoBehaviour
     }
     public void MoveImages()
     {
+        RectTransform canvasRect = optionsWindow.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+        Vector3 middlePoint = canvasRect.position;
+
         if (!isMoved)
         {
             _audio.PlayOneShot(menuClips.clipSounds[0]);
             _audio.PlayOneShot(menuClips.clipSounds[3]);
-            leftImage.rectTransform.DOMoveX(leftImage.rectTransform.position.x - moveDistance, moveDuration).SetEase(Ease.InOutQuint);
-            rightImage.rectTransform.DOMoveX(rightImage.rectTransform.position.x + moveDistance, moveDuration).SetEase(Ease.InOutQuint);
+
+            leftImage.rectTransform.DOMoveX(middlePoint.x, moveDuration).SetEase(Ease.InOutQuint);
+            rightImage.rectTransform.DOMoveX(middlePoint.x, moveDuration).SetEase(Ease.InOutQuint);
+
             StartCoroutine(WaitForClip());
             isMoved = true;
             block.SetActive(true);
             OnImagesMoved?.Invoke();
-
         }
         else
         {
-            leftImage.rectTransform.DOMoveX(leftImage.rectTransform.position.x + moveDistance, moveDuration).SetEase(Ease.InOutQuint);
-            rightImage.rectTransform.DOMoveX(rightImage.rectTransform.position.x - moveDistance, moveDuration).SetEase(Ease.InOutQuint);
+            Vector3 leftOriginalPosition = middlePoint - new Vector3(moveDistance / 2, 0, 0);
+            Vector3 rightOriginalPosition = middlePoint + new Vector3(moveDistance / 2, 0, 0);
+            leftImage.rectTransform.DOMoveX(leftOriginalPosition.x, moveDuration).SetEase(Ease.InOutQuint);
+            rightImage.rectTransform.DOMoveX(rightOriginalPosition.x, moveDuration).SetEase(Ease.InOutQuint);
+
             isMoved = false;
         }
     }
+
+
     public void CloseGame()
     {
-        block.SetActive(true);
-        _audio.PlayOneShot(menuClips.clipSounds[0]);
-        Close.rectTransform.DOMoveY(Close.rectTransform.position.y - distanceY, duration).SetEase(Ease.InBack);
-        Debug.Log("Saliendo del juego...");
+        StartCoroutine(WaitForClose());
+
     }
     IEnumerator WaitForClip()
     {
         yield return new WaitForSeconds(1.2f);
         _audio.PlayOneShot(menuClips.clipSounds[4]);
+    }
+    IEnumerator WaitForClose()
+    {
+        block.SetActive(true);
+        _audio.PlayOneShot(menuClips.clipSounds[0]);
+        Close.rectTransform.DOMoveY(Close.rectTransform.position.y - distanceY, duration).SetEase(Ease.InBack);
+        yield return new WaitForSeconds(3f);
+        Application.Quit();
     }
 }
    

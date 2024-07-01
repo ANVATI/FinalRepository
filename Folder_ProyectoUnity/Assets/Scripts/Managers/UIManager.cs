@@ -35,13 +35,19 @@ public class UIManager : MonoBehaviour
 
     [Header("Fade")]
     [SerializeField] private Image fadeImage;
+    [SerializeField] private Image FadeIn;
 
     [Header("Enemy")]
     [SerializeField] private GameObject Goblin_ui;
     [SerializeField] private GameObject Viking_ui;
 
+    [Header("Lose and Win")]
+    [SerializeField] private Image WinImage;
+    [SerializeField] private Image LoseImage;
+
     private void Start()
     {
+        FadeIn.DOFade(0, 4);
         goblinDead = false;
         dialoguePanel.SetActive(false);
         ApperOptions.SetActive(false);
@@ -60,6 +66,7 @@ public class UIManager : MonoBehaviour
         HerenciaEnemy.OnEnemyKilled += UpdateEnemyCount;
         playerAction.OnGoblinArea += ShowGoblinImage;
         playerAction.OnAldeaArea += ShowVikingImage;
+        Boss.onBossDead += ShowImageWin;
     }
 
     private void OnDisable()
@@ -67,6 +74,7 @@ public class UIManager : MonoBehaviour
         HerenciaEnemy.OnEnemyKilled -= UpdateEnemyCount;
         playerAction.OnGoblinArea -= ShowGoblinImage;
         playerAction.OnAldeaArea -= ShowVikingImage;
+        Boss.onBossDead -= ShowImageWin;
     }
 
     private void Update()
@@ -139,7 +147,7 @@ public class UIManager : MonoBehaviour
     {
         if (lifeBarImage != null && playerController != null)
         {
-            float fillAmount = playerAction.currentHP / 40f;
+            float fillAmount = playerAction.currentHP / 200f;
             lifeBarImage.fillAmount = fillAmount;
         }
     }
@@ -172,23 +180,12 @@ public class UIManager : MonoBehaviour
         {
             characterNameText.text = dialogue.dialogueEntries[currentDialogueIndex].characterName;
             dialogueImage1.sprite = dialogue.dialogueEntries[currentDialogueIndex].dialogueImage1;
-
-            StartCoroutine(TypeSentence(dialogue.dialogueEntries[currentDialogueIndex].dialogueText));
+            dialogueText.text = dialogue.dialogueEntries[currentDialogueIndex].dialogueText;
             currentDialogueIndex++;
         }
         else
         {
             EndDialogue();
-        }
-    }
-
-    IEnumerator TypeSentence(string sentence)
-    {
-        dialogueText.text = "";
-        for (int i = 0; i < sentence.Length; i++)
-        {
-            dialogueText.text += sentence[i];
-            yield return new WaitForSeconds(0.05f);
         }
     }
 
@@ -223,7 +220,7 @@ public class UIManager : MonoBehaviour
             if (vikingCount <= 0)
             {
                 playerAction.onKillAllViking?.Invoke();
-                Viking_ui.SetActive(false);              
+                Viking_ui.SetActive(false);
             }
         }
     }
@@ -241,5 +238,33 @@ public class UIManager : MonoBehaviour
     private void ShowVikingImage()
     {
         Viking_ui.SetActive(true);
+    }
+
+    public void ShowImageWin()
+    {
+        StartCoroutine(TimeToShowWin());
+    }
+
+    public void ShowImageLose()
+    {
+        StartCoroutine(TimeToShowLose());
+    }
+
+    IEnumerator TimeToShowWin()
+    {
+        yield return new WaitForSeconds(2f);
+        WinImage.DOFade(1, 4);
+        yield return new WaitForSeconds(3f);
+        fadeImage.DOFade(1, 3);
+        LoseImage.gameObject.SetActive(false);
+    }
+
+    IEnumerator TimeToShowLose()
+    {
+        yield return new WaitForSeconds(2f);
+        LoseImage.DOFade(1, 4);
+        yield return new WaitForSeconds(3f);
+        fadeImage.DOFade(1, 3);
+        WinImage.gameObject.SetActive(false);
     }
 }

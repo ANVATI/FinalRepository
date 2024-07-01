@@ -13,6 +13,12 @@ TagManager:
   - BossArea
   - Bosque
   - Aldea
+  - VikingWeapon
+  - GoblinWeapon
+  - CaveFloor
+  - Sword
+  - Axe1
+  - Axe
   layers:
   - Default
   - TransparentFX

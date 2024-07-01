@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using DG.Tweening;
 
 public class Goblin : HerenciaEnemy
 {
@@ -11,10 +12,12 @@ public class Goblin : HerenciaEnemy
     protected int currentPatrolIndex = 0;
     protected GameObject currentTargetNode;
 
+    public BoxCollider goblinAxe;
     public float detectionRadius = 10f;
     public Transform playerFollow;
 
     public float chaseSpeed = 6f;
+    public bool IncaveArea;
 
     protected bool isPaused = false;
     protected bool isChasingPlayer = false;
@@ -25,6 +28,7 @@ public class Goblin : HerenciaEnemy
     protected Renderer enemyRenderer;
     public LibrarySounds goblinSounds;
     public GameObject Eyes;
+    public GameObject Axe;
     protected float dissolveAmount = 0f;
     protected float dissolveSpeed = 1f;
     protected float timer;
@@ -35,15 +39,17 @@ public class Goblin : HerenciaEnemy
 
     protected override void Awake()
     {
+        goblinAxe.enabled = false;
         base.Awake();
         speed = 2;
         enemyRenderer = GetComponentInChildren<Renderer>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = speed;
         navMeshAgent.enabled = false;
-        maxHP = 50;
+        maxHP = 35;
+        damage = 5;
         currentHP = maxHP;
-        pushingForce = 10;
+        pushingForce = 20;
         enemyRenderer = GetComponentInChildren<Renderer>();
         mpb = new MaterialPropertyBlock();
         InitializePatrolRoute();
@@ -193,6 +199,11 @@ public class Goblin : HerenciaEnemy
             Vector3 direction = (transform.position - attackerPosition).normalized;
             rb.AddForce(direction * pushingForce, ForceMode.Impulse);
 
+            if (currentHP <= 10 && IncaveArea)
+            {
+                ShrinkGoblin();
+            }
+
             if (isAttacking)
             {
                 StopCoroutine(AttackCoroutine());
@@ -202,6 +213,12 @@ public class Goblin : HerenciaEnemy
 
             StartCoroutine(TakeDamageCoroutine());
         }
+    }
+
+    private void ShrinkGoblin()
+    {
+        transform.DOScale(new Vector3(0.7f, 0.7f, 0.7f), 1f).SetEase(Ease.InOutQuad);
+        speed = speed + 2;
     }
 
     public void Kill()
@@ -240,6 +257,7 @@ public class Goblin : HerenciaEnemy
 
         enemyCollider.enabled = false;
         Destroy(Eyes.gameObject);
+        Destroy(Axe.gameObject);
         yield return new WaitForSeconds(1.5f);
         _audio.PlayOneShot(goblinSounds.clipSounds[2]);
         yield return new WaitForSeconds(0.75f);
@@ -261,13 +279,17 @@ public class Goblin : HerenciaEnemy
 
     protected void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.CompareTag( "Player"))
         {
             if (!isAttacking && !playerInCollision && !isTakingDamage && !isDying)
             {
                 playerInCollision = true;
                 StartCoroutine(AttackCoroutine());
             }
+        }
+        else if (collision.gameObject.CompareTag("CaveFloor"))
+        {
+            IncaveArea = true;
         }
     }
 
@@ -300,7 +322,15 @@ public class Goblin : HerenciaEnemy
 
     protected void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Arma")
+        if (other.gameObject.CompareTag("Axe"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage + 10, weapon.transform.position);
+            }
+        }
+        else if (other.gameObject.CompareTag("Sword"))
         {
             Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
             if (weapon != null)
@@ -308,5 +338,22 @@ public class Goblin : HerenciaEnemy
                 TakeDamage(weapon.Damage, weapon.transform.position);
             }
         }
+        else if (other.gameObject.CompareTag("Axe1"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage, weapon.transform.position);
+            }
+        }
+    }
+    public void ActivarColliderGoblin()
+    {
+        goblinAxe.enabled = true;
+    }
+
+    public void DesactivarColliderGoblin()
+    {
+        goblinAxe.enabled = false;
     }
 }

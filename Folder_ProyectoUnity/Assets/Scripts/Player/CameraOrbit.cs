@@ -17,7 +17,7 @@ public class CameraOrbit : MonoBehaviour
 
     void Start()
     {
-        //playerActions = FindObjectOfType<PlayerActions>();
+        playerActions = FindObjectOfType<PlayerActions>();
         camera = GetComponent<Camera>();
         CalculateNearPlaneSize();
         canMoveCamera = true;
@@ -66,6 +66,7 @@ public class CameraOrbit : MonoBehaviour
     public void CameraTrackDistance()
     {
         currentDistance = maxDistance;
+        canMoveCamera = false;
     }
     private void CalculateNearPlaneSize()
     {

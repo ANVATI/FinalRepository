@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.AI;
+using System;
 
 public class Boss : HerenciaEnemy
 {
@@ -12,6 +13,8 @@ public class Boss : HerenciaEnemy
     private float dissolveSpeed = 1f;
     private int totalDamageTaken = 0;
     private float timer;
+    public static Action onBossDead;
+    private GameManager manager;
 
     [Header("Boss Movement")]
     public Transform objetivo;
@@ -35,16 +38,17 @@ public class Boss : HerenciaEnemy
     public GameObject musicCave;
     protected void Start()
     {
-        maxHP = 30;
+        maxHP = 200;
         currentHP = maxHP;
         pushingForce = 20;
+        damage = 20;
         speed = 5;
         enemyRenderer = GetComponentInChildren<Renderer>();
         mpb = new MaterialPropertyBlock();
         IA.speed = speed;
         DesactivarColliderBoss();
         StopAllBossActions();
-
+        manager = FindObjectOfType<GameManager>();
         footSteps = GetComponents<AudioSource>()[1];
     }
 
@@ -189,7 +193,23 @@ public class Boss : HerenciaEnemy
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Arma") && !isDead)
+        if (other.gameObject.CompareTag("Axe1"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage + 10, weapon.transform.position);
+            }
+        }
+        else if (other.gameObject.CompareTag("Sword"))
+        {
+            Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.Damage, weapon.transform.position);
+            }
+        }
+        else if (other.gameObject.CompareTag("Axe"))
         {
             Weapons weapon = other.gameObject.GetComponentInParent<Weapons>();
             if (weapon != null)
@@ -234,6 +254,7 @@ public class Boss : HerenciaEnemy
     {
         _audio.PlayOneShot(BossSounds.clipSounds[12]);
         animator.SetTrigger("BossDie");
+        onBossDead?.Invoke();
         enemyCollider.enabled = false;
         yield return new WaitForSeconds(1f);
         VFX_die.Play();

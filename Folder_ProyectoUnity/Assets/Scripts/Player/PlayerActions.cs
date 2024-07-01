@@ -26,28 +26,29 @@ public class PlayerActions : MonoBehaviour
     public AnimationCurve scaleCurve;
     public float currentHP;
     public bool inZone = false;
-
-    private void Start()
-    {
-        inZone = false;
-        playerController = PlayerController.Instance;
-        manager = FindObjectOfType<GameManager>();
-        UI = FindObjectOfType<UIManager>();
-        currentHP = attributes.Life;
-    }
+    private AudioSource _audioSource;
+    public LibrarySounds _actionSounds;
+    public GameObject rageEffect;
 
     private void Awake()
     {
+        rageEffect.SetActive(false);
         Debug.Log("Valores Restaurados");
         attributes.maxSpeed = 10f;
         attributes.acceleration = 2.5f;
         attributes.currentSpeed = 2f;
-        attributes.Life = 40f;
+        attributes.Life = 200f;
         attributes.walkSpeed = 5.0f;
         attributes.crouchSpeed = 3.0f;
         attributes.rollForce = 7.5f;
         attributes.Stamina = 100f;
         attributes.runSpeed = 10f;
+        currentHP = attributes.Life;
+        _audioSource = GetComponents<AudioSource>()[0];
+        inZone = false;
+        playerController = PlayerController.Instance;
+        manager = FindObjectOfType<GameManager>();
+        UI = FindObjectOfType<UIManager>();
     }
 
     public float GetRemainingRageDuration()
@@ -84,6 +85,7 @@ public class PlayerActions : MonoBehaviour
 
     private IEnumerator ReduceRageOverTime(float duration)
     {
+        rageEffect.SetActive(true);
         float startValue = 10;
         float time = 0;
 
@@ -96,6 +98,7 @@ public class PlayerActions : MonoBehaviour
 
         remainingRageDuration = 0;
         inRageMode = false;
+        rageEffect.SetActive(false);
         enemyKillCount = 0;
     }
 
@@ -150,6 +153,7 @@ public class PlayerActions : MonoBehaviour
         playerController.PlayerDead();
         manager.ReturnMenúDie();
         UI.Fade();
+        UI.ShowImageLose();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -160,6 +164,7 @@ public class PlayerActions : MonoBehaviour
             if (boss != null)
             {
                 TakeDamageFromBoss(boss.damage);
+                _audioSource.PlayOneShot(_actionSounds.clipSounds[UnityEngine.Random.Range(6, 8)]);
             }
         }
         else if (other.gameObject.CompareTag("BossArea"))
@@ -168,6 +173,7 @@ public class PlayerActions : MonoBehaviour
             if (boss != null)
             {
                 TakeDamageFromBoss(boss.damage * 2f);
+                _audioSource.PlayOneShot(_actionSounds.clipSounds[UnityEngine.Random.Range(6, 8)]);
             }
         }
         else if (other.gameObject.CompareTag("Zone"))
@@ -185,6 +191,25 @@ public class PlayerActions : MonoBehaviour
         {
             OnAldeaArea?.Invoke();
             AldeaArea = true;
+        }
+        else if (other.gameObject.CompareTag("GoblinWeapon"))
+        {
+            Goblin goblin = other.gameObject.GetComponentInParent<Goblin>();
+            if (goblin != null)
+            {
+                TakeDamageFromBoss(goblin.damage);
+                _audioSource.PlayOneShot(_actionSounds.clipSounds[UnityEngine.Random.Range(6, 8)]);
+            }
+        }
+        else if (other.gameObject.CompareTag("VikingWeapon"))
+        {
+            Viking viking = other.gameObject.GetComponentInParent<Viking>();
+            if (viking != null)
+            {
+                TakeDamageFromBoss(viking.damage);
+                _audioSource.PlayOneShot(_actionSounds.clipSounds[UnityEngine.Random.Range(6, 8)]);
+
+            }
         }
     }
 

@@ -14,14 +14,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueEntries:
   - characterName: Lark
-    dialogueText: Hola
+    dialogueText: Ragnar you finally return from your expedition
     dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
   - characterName: Ragnar
-    dialogueText: Hola papaseto
+    dialogueText: If Lark is back, has something happened to the Village?
     dialogueImage1: {fileID: 21300000, guid: f1cfe11a7c5bf464f9db2f9a3a8809cb, type: 3}
   - characterName: Lark
-    dialogueText: "ANVATI ES EL M\xC1S GOZU"
+    dialogueText: Vyrnaxx broke the agreement they had and betrayed us, he took control
+      of the village
     dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
   - characterName: Ragnar
-    dialogueText: Claro que chi
+    dialogueText: And what happened to the villagers?
+    dialogueImage1: {fileID: 21300000, guid: f1cfe11a7c5bf464f9db2f9a3a8809cb, type: 3}
+  - characterName: Lark
+    dialogueText: They managed to escape on the boats, please defeat Vyrnaxx and
+      free the village from his rule.
+    dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
+  - characterName: Ragnar
+    dialogueText: Leave it to me Lark, is Vyrnaxx alone or does he have minions?
+    dialogueImage1: {fileID: 21300000, guid: f1cfe11a7c5bf464f9db2f9a3a8809cb, type: 3}
+  - characterName: Lark
+    dialogueText: No, that bastard summoned goblins and managed to convince the village
+      warriors in exchange for power.
+    dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
+  - characterName: Ragnar
+    dialogueText: Damn, then I'll have to kill everyone before I can face Vyrnaxx.
+    dialogueImage1: {fileID: 21300000, guid: f1cfe11a7c5bf464f9db2f9a3a8809cb, type: 3}
+  - characterName: Lark
+    dialogueText: Vyrnaxx is in his cave
+    dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
+  - characterName: Lark
+    dialogueText: First you must kill the goblins that are roaming the forest.
+    dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
+  - characterName: Lark
+    dialogueText: By finishing off the goblins you will be able to enter the village
+      to face the Vikings.
+    dialogueImage1: {fileID: 21300000, guid: 79686346a7e825a4cbaffe27799ff2ac, type: 3}
+  - characterName: Ragnar
+    dialogueText: Thanks for the information Lark, leave it to me.
     dialogueImage1: {fileID: 21300000, guid: f1cfe11a7c5bf464f9db2f9a3a8809cb, type: 3}

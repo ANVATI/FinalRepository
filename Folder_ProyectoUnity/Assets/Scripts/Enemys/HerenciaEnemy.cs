@@ -6,7 +6,7 @@ using System;
 
 public class HerenciaEnemy : MonoBehaviour
 {
-    //Componentes Heredados
+    [Header("Componentes Heredados")]
     public static Action OnEnemyKilled;
     protected Animator animator;
     protected Rigidbody rb;
@@ -17,7 +17,7 @@ public class HerenciaEnemy : MonoBehaviour
     protected MaterialPropertyBlock mpb;
     protected NavMeshAgent IA;
 
-    //Atributos Heredados
+    [Header("Atributos Heredados")]
     protected int currentHP; 
     protected int maxHP;
     protected int speed;

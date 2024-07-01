@@ -5,9 +5,10 @@ public class NPCLogic : MonoBehaviour
 {
     Animator _animator;
     bool inArea;
-
+    public GameObject Dialog;
     private void Start()
     {
+        Dialog.SetActive(true);
         _animator = GetComponent<Animator>();
     }
 
@@ -18,6 +19,7 @@ public class NPCLogic : MonoBehaviour
             inArea = true;
             if (inArea)
             {
+                Dialog.SetActive(false);
                 _animator.SetBool("Talk", true);
             }
         }
