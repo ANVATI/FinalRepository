@@ -5,37 +5,20 @@ using DG.Tweening;
 
 public class Goblin : HerenciaEnemy
 {
+    [Header("Sistema de Grafos")]
     public Graph graph;
     public GameObject[] patrolRouteArray;
-    protected SimpleList<GameObject> patrolRoute = new SimpleList<GameObject>();
 
-    protected int currentPatrolIndex = 0;
-    protected GameObject currentTargetNode;
-
+    [Header("Detección y Ataque")]
     public BoxCollider goblinAxe;
-    public float detectionRadius = 10f;
+    public float detectionRadius;
     public Transform playerFollow;
-
-    public float chaseSpeed = 6f;
+    public float chaseSpeed;
     public bool IncaveArea;
 
-    protected bool isPaused = false;
-    protected bool isChasingPlayer = false;
-    protected bool isAttacking = false;
-    protected bool isTakingDamage = false;
-    protected bool isDying = false;
-
-    protected Renderer enemyRenderer;
     public LibrarySounds goblinSounds;
     public GameObject Eyes;
     public GameObject Axe;
-    protected float dissolveAmount = 0f;
-    protected float dissolveSpeed = 1f;
-    protected float timer;
-    protected bool playerInCollision = false;
-    protected bool isDead = false;
-
-    private NavMeshAgent navMeshAgent;
 
     protected override void Awake()
     {
@@ -43,9 +26,9 @@ public class Goblin : HerenciaEnemy
         base.Awake();
         speed = 2;
         enemyRenderer = GetComponentInChildren<Renderer>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = speed;
-        navMeshAgent.enabled = false;
+        IA = GetComponent<NavMeshAgent>();
+        IA.speed = speed;
+        IA.enabled = false;
         maxHP = 35;
         damage = 5;
         currentHP = maxHP;
@@ -66,7 +49,8 @@ public class Goblin : HerenciaEnemy
             timer = 0;
         }
 
-        if (isDead) return;
+        if (isDead) 
+            return;
 
         if (isDying)
             return;
@@ -78,10 +62,10 @@ public class Goblin : HerenciaEnemy
         {
             animator.SetBool("GoblinWalk", false);
             animator.SetBool("GoblinRun", true);
-            navMeshAgent.speed = chaseSpeed;
-            if (navMeshAgent.enabled)
+            IA.speed = chaseSpeed;
+            if (IA.enabled)
             {
-                navMeshAgent.SetDestination(playerFollow.position);
+                IA.SetDestination(playerFollow.position);
             }
             LookAtTarget(playerFollow.position);
         }
@@ -91,10 +75,10 @@ public class Goblin : HerenciaEnemy
             {
                 animator.SetBool("GoblinRun", false);
                 animator.SetBool("GoblinWalk", true);
-                navMeshAgent.speed = speed;
-                if (navMeshAgent.enabled)
+                IA.speed = speed;
+                if (IA.enabled)
                 {
-                    navMeshAgent.SetDestination(currentTargetNode.transform.position);
+                    IA.SetDestination(currentTargetNode.transform.position);
                 }
                 LookAtTarget(currentTargetNode.transform.position);
 
@@ -155,9 +139,9 @@ public class Goblin : HerenciaEnemy
             animator.SetBool("GoblinRun", true);
             isChasingPlayer = true;
             isPaused = false;
-            navMeshAgent.enabled = true;
-            navMeshAgent.speed = chaseSpeed;
-            navMeshAgent.SetDestination(playerFollow.position);
+            IA.enabled = true;
+            IA.speed = chaseSpeed;
+            IA.SetDestination(playerFollow.position);
         }
     }
 
@@ -168,7 +152,7 @@ public class Goblin : HerenciaEnemy
             animator.SetBool("GoblinRun", false);
             animator.SetBool("GoblinWalk", true);
             isChasingPlayer = false;
-            navMeshAgent.enabled = false;
+            IA.enabled = false;
             InitializeEnemy();
         }
     }
@@ -279,9 +263,9 @@ public class Goblin : HerenciaEnemy
 
     protected void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag( "Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            if (!isAttacking && !playerInCollision && !isTakingDamage && !isDying)
+            if (!isAttacking && !isTakingDamage && !isDying)
             {
                 playerInCollision = true;
                 StartCoroutine(AttackCoroutine());
@@ -303,20 +287,22 @@ public class Goblin : HerenciaEnemy
 
     IEnumerator AttackCoroutine()
     {
-        isAttacking = true;
-        animator.SetBool("GoblinWalk", false);
-        animator.SetBool("GoblinRun", false);
-        animator.SetBool("GoblinAttack", true);
-        navMeshAgent.isStopped = true;
-
-        yield return new WaitForSeconds(1.5f);
-
-        if (!isDying)
+        while (playerInCollision)
         {
-            isAttacking = false;
-            animator.SetBool("GoblinWalk", true);
-            animator.SetBool("GoblinAttack", false);
-            navMeshAgent.isStopped = false;
+            isAttacking = true;
+            animator.SetBool("GoblinWalk", false);
+            animator.SetBool("GoblinRun", false);
+            animator.SetBool("GoblinAttack", true);
+            IA.isStopped = true;
+            yield return new WaitForSeconds(1.5f);
+
+            if (!isDying)
+            {
+                isAttacking = false;
+                animator.SetBool("GoblinWalk", true);
+                animator.SetBool("GoblinAttack", false);
+                IA.isStopped = false;
+            }
         }
     }
 
@@ -347,6 +333,7 @@ public class Goblin : HerenciaEnemy
             }
         }
     }
+
     public void ActivarColliderGoblin()
     {
         goblinAxe.enabled = true;

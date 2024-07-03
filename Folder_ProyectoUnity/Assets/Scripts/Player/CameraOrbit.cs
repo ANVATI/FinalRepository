@@ -4,11 +4,15 @@ public class CameraOrbit : MonoBehaviour
     private Vector2 angle = new Vector2(90 * Mathf.Deg2Rad, 0);
     private new Camera camera;
     private Vector2 nearPlaneSize;
+    [Header("Referencias de Clases")]
     public UIManager managerUI;
     public PlayerActions playerActions;
     private bool canMoveCamera = true;
 
+    [Header("Objetivo de la camara")]
     public Transform follow;
+
+    [Header("Configuración de camara")]
     public float maxDistance = 10f;
     public Vector2 sensitivity;
     public float zoomSpeed = 5f;
@@ -17,7 +21,7 @@ public class CameraOrbit : MonoBehaviour
 
     void Start()
     {
-        playerActions = FindObjectOfType<PlayerActions>();
+        //playerActions = FindObjectOfType<PlayerActions>();
         camera = GetComponent<Camera>();
         CalculateNearPlaneSize();
         canMoveCamera = true;

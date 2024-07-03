@@ -39,6 +39,10 @@ public class OptionsMenuController : MonoBehaviour
 
     [Header("ImageFade")]
     public Image Fade;
+
+    [Header("Credits and Controls")]
+    public GameObject credits;
+    public GameObject controls;
     void Start()
     {
         Fade.DOFade(0, 4f);
@@ -87,6 +91,7 @@ public class OptionsMenuController : MonoBehaviour
     public void SlideMenuLeft()
     {
         block.SetActive(true);
+        credits.SetActive(true);
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         _audio.PlayOneShot(menuClips.clipSounds[2]);
         ui_menu.DOAnchorPosX(visibleMenuPosition.x, 1.5f).SetEase(Ease.InSine);
@@ -95,6 +100,7 @@ public class OptionsMenuController : MonoBehaviour
     public void SlideMenuRight()
     {
         block.SetActive(false);
+        StartCoroutine(WaitForCredits());
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         _audio.PlayOneShot(menuClips.clipSounds[2]);
         ui_menu.DOAnchorPosX(hiddenMenuPosition.x, 1.5f).SetEase(Ease.InSine);
@@ -136,7 +142,7 @@ public class OptionsMenuController : MonoBehaviour
     }
     IEnumerator WaitForClip()
     {
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1.5f);
         _audio.PlayOneShot(menuClips.clipSounds[4]);
     }
     IEnumerator WaitForClose()
@@ -144,8 +150,28 @@ public class OptionsMenuController : MonoBehaviour
         block.SetActive(true);
         _audio.PlayOneShot(menuClips.clipSounds[0]);
         Close.rectTransform.DOMoveY(Close.rectTransform.position.y - distanceY, duration).SetEase(Ease.InBack);
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         Application.Quit();
+    }
+    public void SlideMenuLeftControl()
+    {
+        block.SetActive(true);
+        _audio.PlayOneShot(menuClips.clipSounds[0]);
+        _audio.PlayOneShot(menuClips.clipSounds[2]);
+        ui_menu.DOAnchorPosX(visibleMenuPosition.x, 1.5f).SetEase(Ease.InSine);
+    }
+
+    public void SlideMenuRightControl()
+    {
+        block.SetActive(false);
+        _audio.PlayOneShot(menuClips.clipSounds[0]);
+        _audio.PlayOneShot(menuClips.clipSounds[2]);
+        ui_menu.DOAnchorPosX(hiddenMenuPosition.x, 1.5f).SetEase(Ease.InSine);
+    }
+    IEnumerator WaitForCredits()
+    {
+        yield return new WaitForSeconds(2f);
+        credits.SetActive(false);
     }
 }
    

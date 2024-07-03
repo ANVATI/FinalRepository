@@ -5,8 +5,8 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
-    public PlayerAttributes playerAttributes;
     public Transform cameraTransform;
+    public PlayerAttributes playerAttributes;
     public PlayerActions playerAction;
     public AudioSource walkAudioSource;
     public AudioSource _audioSource;
@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isDead)
         {
+            IncreaseLife(Time.deltaTime * 0.5f);
             HandleMovement();
             UpdateAnimation();
             AudioMovement();
@@ -177,7 +178,7 @@ public class PlayerController : MonoBehaviour
         if (isDead) return;
         if (playerState != PlayerState.Crouching && playerAction.GetEnemyKillCount() >= 10 && !isAttacking)
         {
-            if (context.performed)
+            if (context.performed && !playerAction.rage)
             {
                 _audioSource.PlayOneShot(_actionSounds.clipSounds[0]);
                 playerAction.TriggerRage();
@@ -352,7 +353,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            IncreaseStamina(Time.deltaTime * 5f);
+            IncreaseStamina(Time.deltaTime * 5f);          
 
             if (playerState == PlayerState.Walking || playerState == PlayerState.Running)
             {
@@ -456,6 +457,10 @@ public class PlayerController : MonoBehaviour
     private void DecreaseStamina(float amount)
     {
         playerAttributes.Stamina = Mathf.Max(playerAttributes.Stamina - amount, 0);
+    }
+    private void IncreaseLife(float amount)
+    {
+        playerAction.currentHP = Mathf.Min(playerAction.currentHP + amount, 200);
     }
 
     private void OnCollisionEnter(Collision collision)

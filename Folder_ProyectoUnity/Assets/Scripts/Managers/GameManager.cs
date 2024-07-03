@@ -29,12 +29,9 @@ public class GameManager : MonoBehaviour
         StartCoroutine(WaitForChangeScene());
     }
     /*
-    public void CloseCave(bool close)
+    public void CloseCave()
     {
-        if (close)
-        {
-            wall.SetActive(true);
-        }
+       wall.SetActive(true);
     }
     */
     public void ReturnMenúDie()

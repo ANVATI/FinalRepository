@@ -35,13 +35,13 @@ public class MouseUI : MonoBehaviour
 
     public void OnPointerEnter()
     {
-        rectTransform.DOScale(1.08f, 0.2f).SetEase(Ease.OutBack);
+        rectTransform.DOScale(0.9f, 0.2f).SetEase(Ease.OutBack);
         //GetComponent<Image>().DOColor(Color.red, 0.2f);
     }
 
     public void OnPointerExit()
     {
-        rectTransform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);
+        rectTransform.DOScale(0.85855f, 0.2f).SetEase(Ease.OutBack);
         //GetComponent<Image>().DOColor(Color.white, 0.8f);
     }
 

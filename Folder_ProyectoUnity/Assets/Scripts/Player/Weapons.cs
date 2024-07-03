@@ -11,7 +11,7 @@ public class Weapons : MonoBehaviour
     private AudioSource _weaponsSource;
     public AudioClip slashSound;
     public int Damage = 5;
-
+    private int damageBase;
     private void Awake()
     {
         _weaponsSource = GetComponents<AudioSource>()[0];
@@ -19,6 +19,7 @@ public class Weapons : MonoBehaviour
 
     private void Start()
     {
+        damageBase = Damage;
         DesactivarColliders();
         DesactivarTrails(); 
     }
@@ -79,5 +80,13 @@ public class Weapons : MonoBehaviour
             activateWeapons[i].SetActive(false);
         }
         activateWeapons[index].SetActive(true);
+    }
+    public void ModifyDamage()
+    {
+        Damage = Damage + 10;
+    }
+    public void NormalizeDamage()
+    {
+        Damage = damageBase;
     }
 }

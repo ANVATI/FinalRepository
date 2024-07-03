@@ -3,41 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
+
 public class Viking : HerenciaEnemy
 {
+    [Header("Sistema de Grafos")]
     public Graph graph;
     public GameObject[] patrolRouteArray;
-    protected SimpleList<GameObject> patrolRoute = new SimpleList<GameObject>();
 
-    protected int currentPatrolIndex = 0;
-    protected GameObject currentTargetNode;
-
-    public float detectionRadius = 10f;
+    [Header("Detección y Ataque")]
+    public float detectionRadius;
     public Transform playerFollow;
-
-    public float chaseSpeed = 6f;
+    public float chaseSpeed;
     public BoxCollider mazo;
 
-    protected bool isPaused = false;
-    protected bool isChasingPlayer = false;
-    protected bool isAttacking = false;
-    protected bool isTakingDamage = false;
-    protected bool isDying = false;
-
+    [Header("Efectos de Sonido")]
     public LibrarySounds vikingSounds;
-    protected float timer;
-    protected bool playerInCollision = false;
-    protected bool isDead = false;
-
-    private NavMeshAgent navMeshAgent;
 
     protected override void Awake()
     {
         mazo.enabled = false;
         base.Awake();
         speed = 2;
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = speed;
+        IA = GetComponent<NavMeshAgent>();
+        IA.speed = speed;
         maxHP = 60;
         currentHP = maxHP;
         pushingForce = 20;
@@ -67,10 +55,10 @@ public class Viking : HerenciaEnemy
         {
             animator.SetBool("VikingWalk", false);
             animator.SetBool("VikingRun", true);
-            navMeshAgent.speed = chaseSpeed;
-            if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
+            IA.speed = chaseSpeed;
+            if (IA.enabled && IA.isOnNavMesh)
             {
-                navMeshAgent.SetDestination(playerFollow.position);
+                IA.SetDestination(playerFollow.position);
             }
             LookAtTarget(playerFollow.position);
         }
@@ -80,10 +68,10 @@ public class Viking : HerenciaEnemy
             {
                 animator.SetBool("VikingRun", false);
                 animator.SetBool("VikingWalk", true);
-                navMeshAgent.speed = speed;
-                if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
+                IA.speed = speed;
+                if (IA.enabled && IA.isOnNavMesh)
                 {
-                    navMeshAgent.SetDestination(currentTargetNode.transform.position);
+                    IA.SetDestination(currentTargetNode.transform.position);
                 }
                 LookAtTarget(currentTargetNode.transform.position);
 
@@ -118,9 +106,9 @@ public class Viking : HerenciaEnemy
         if (patrolRoute.Length > 0)
         {
             currentTargetNode = patrolRoute.Get(currentPatrolIndex);
-            if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
+            if (IA.enabled && IA.isOnNavMesh)
             {
-                navMeshAgent.SetDestination(currentTargetNode.transform.position);
+                IA.SetDestination(currentTargetNode.transform.position);
             }
         }
     }
@@ -129,9 +117,9 @@ public class Viking : HerenciaEnemy
     {
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolRoute.Length;
         currentTargetNode = patrolRoute.Get(currentPatrolIndex);
-        if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
+        if (IA.enabled && IA.isOnNavMesh)
         {
-            navMeshAgent.SetDestination(currentTargetNode.transform.position);
+            IA.SetDestination(currentTargetNode.transform.position);
         }
     }
 
@@ -152,9 +140,9 @@ public class Viking : HerenciaEnemy
             animator.SetBool("VikingRun", true);
             isChasingPlayer = true;
             isPaused = false;
-            navMeshAgent.enabled = true;
-            navMeshAgent.speed = chaseSpeed;
-            navMeshAgent.SetDestination(playerFollow.position);
+            IA.enabled = true;
+            IA.speed = chaseSpeed;
+            IA.SetDestination(playerFollow.position);
         }
     }
 
@@ -165,7 +153,7 @@ public class Viking : HerenciaEnemy
             animator.SetBool("VikingRun", false);
             animator.SetBool("VikingWalk", true);
             isChasingPlayer = false;
-            navMeshAgent.enabled = false;
+            IA.enabled = false;
             InitializeEnemy();
         }
     }
@@ -210,6 +198,7 @@ public class Viking : HerenciaEnemy
             StartCoroutine(TakeDamageCoroutine());
         }
     }
+
     private void ShrinkViking()
     {
         transform.DOScale(new Vector3(1.03f, 1.03f, 1.03f), 1f).SetEase(Ease.InOutQuad);
@@ -278,26 +267,28 @@ public class Viking : HerenciaEnemy
         {
             playerInCollision = false;
             rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionX;
-            rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionX;
+            rb.constraints = rb.constraints & ~RigidbodyConstraints.FreezePositionZ;
         }
     }
 
     IEnumerator AttackCoroutine()
     {
-        isAttacking = true;
-        animator.SetBool("VikingWalk", false);
-        animator.SetBool("VikingRun", false);
-        animator.SetBool("VikingAttack", true);
-        navMeshAgent.isStopped = true;
-
-        yield return new WaitForSeconds(1.5f);
-
-        if (!isDying)
+        while (playerInCollision)
         {
-            isAttacking = false;
-            animator.SetBool("VikingWalk", true);
-            animator.SetBool("VikingAttack", false);
-            navMeshAgent.isStopped = false;
+            isAttacking = true;
+            animator.SetBool("VikingWalk", false);
+            animator.SetBool("VikingRun", false);
+            animator.SetBool("VikingAttack", true);
+            IA.isStopped = true;
+            yield return new WaitForSeconds(1.5f);
+
+            if (!isDying)
+            {
+                isAttacking = false;
+                animator.SetBool("VikingWalk", true);
+                animator.SetBool("VikingAttack", false);
+                IA.isStopped = false;
+            }
         }
     }
 
@@ -327,7 +318,6 @@ public class Viking : HerenciaEnemy
                 TakeDamage(weapon.Damage, weapon.transform.position);
             }
         }
-
     }
 
     public void ActivarColliderViking()

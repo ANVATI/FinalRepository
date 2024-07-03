@@ -16,22 +16,31 @@ public class PlayerActions : MonoBehaviour
     private bool GlobinArea;
     private bool AldeaArea;
 
+    [Header("Referencias a clases")]
     public PlayerAttributes attributes;
+    public Weapons weapon;
     public GameManager manager;
     public PlayerController playerController;
     public UIManager UI;
+
     private float remainingRageDuration = 0f;
     private int enemyKillCount;
+
+    [Header("Variables Públicas")]
     public bool inRageMode;
     public AnimationCurve scaleCurve;
     public float currentHP;
     public bool inZone = false;
     private AudioSource _audioSource;
+
+    [Header("Efectos Visual y Auditivos")]
     public LibrarySounds _actionSounds;
     public GameObject rageEffect;
+    public bool rage;
 
     private void Awake()
     {
+        rage = false;
         rageEffect.SetActive(false);
         Debug.Log("Valores Restaurados");
         attributes.maxSpeed = 10f;
@@ -49,6 +58,7 @@ public class PlayerActions : MonoBehaviour
         playerController = PlayerController.Instance;
         manager = FindObjectOfType<GameManager>();
         UI = FindObjectOfType<UIManager>();
+        weapon = GetComponent<Weapons>();
     }
 
     public float GetRemainingRageDuration()
@@ -60,12 +70,14 @@ public class PlayerActions : MonoBehaviour
     {
         HerenciaEnemy.OnEnemyKilled += IncrementEnemyKillCount;
         onRage += ApplyRageEffect;
+        Boss.onBossDead += SoundWin;
     }
 
     private void OnDisable()
     {
         HerenciaEnemy.OnEnemyKilled -= IncrementEnemyKillCount;
         onRage -= ApplyRageEffect;
+        Boss.onBossDead -= SoundWin;
     }
 
     public void TriggerRage()
@@ -78,14 +90,15 @@ public class PlayerActions : MonoBehaviour
 
     private void ApplyRageEffect()
     {
+        rage = true;
+        rageEffect.SetActive(true);
         playerController.playerAttributes.Stamina = 100f;
         ScaleForDuration(Vector3.one * 1.5f, attributes.RageDuration);
         StartCoroutine(ReduceRageOverTime(attributes.RageDuration));
     }
 
     private IEnumerator ReduceRageOverTime(float duration)
-    {
-        rageEffect.SetActive(true);
+    {       
         float startValue = 10;
         float time = 0;
 
@@ -100,11 +113,14 @@ public class PlayerActions : MonoBehaviour
         inRageMode = false;
         rageEffect.SetActive(false);
         enemyKillCount = 0;
+        rage = false;
     }
 
     private void ScaleForDuration(Vector3 targetScale, float duration)
     {
         Debug.Log("MODO RAGE");
+        weapon.ModifyDamage();
+        Debug.Log("Se modifico el daño");
         Vector3 originalScale = transform.localScale;
         inRageMode = true;
 
@@ -118,6 +134,8 @@ public class PlayerActions : MonoBehaviour
                 attributes.ResetAttributes();
                 playerController.playerAttributes.Stamina = 100f;
                 inRageMode = false;
+                weapon.NormalizeDamage();
+                Debug.Log("Se restauro el daño");
                 enemyKillCount = 0;
             });
         });
@@ -160,6 +178,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (other.gameObject.CompareTag("BossHand"))
         {
+            playerController = GetComponent<PlayerController>();
             Boss boss = other.gameObject.GetComponentInParent<Boss>();
             if (boss != null)
             {
@@ -219,5 +238,14 @@ public class PlayerActions : MonoBehaviour
         {
             TakeDamageFromBoss(0.01f); 
         }
+    }
+    private void SoundWin()
+    {
+        StartCoroutine(WaitForSoundVictory());
+    }
+    IEnumerator WaitForSoundVictory()
+    {
+        yield return new WaitForSeconds(2f);
+        _audioSource.PlayOneShot(_actionSounds.clipSounds[9]);
     }
 }

@@ -6,15 +6,11 @@ using System;
 
 public class Boss : HerenciaEnemy
 {
-    private Renderer enemyRenderer;
+    [Header("Efectos Visuales y Auditivos")]
     public LibrarySounds BossSounds;
     public VisualEffect VFX_die;
-    private float dissolveAmount = 0f;
-    private float dissolveSpeed = 1f;
     private int totalDamageTaken = 0;
-    private float timer;
     public static Action onBossDead;
-    private GameManager manager;
 
     [Header("Boss Movement")]
     public Transform objetivo;
@@ -22,9 +18,6 @@ public class Boss : HerenciaEnemy
 
     [Header("Boss Attack")]
     public BoxCollider handBoss;
-    private bool isAttacking = false;
-    private bool isTakingDamage = false;
-    private bool isDead = false;
     private bool hasTaunted = false;
 
     [Header("Class References")]
@@ -38,7 +31,7 @@ public class Boss : HerenciaEnemy
     public GameObject musicCave;
     protected void Start()
     {
-        maxHP = 20;
+        maxHP = 300;
         currentHP = maxHP;
         pushingForce = 20;
         damage = 20;
@@ -48,7 +41,6 @@ public class Boss : HerenciaEnemy
         IA.speed = speed;
         DesactivarColliderBoss();
         StopAllBossActions();
-        manager = FindObjectOfType<GameManager>();
         footSteps = GetComponents<AudioSource>()[1];
     }
 
@@ -125,7 +117,7 @@ public class Boss : HerenciaEnemy
         currentHP -= damage;
         totalDamageTaken += damage;
 
-        int damageThreshold = 10;
+        int damageThreshold = 30;
         if (totalDamageTaken >= damageThreshold && !isSpecialAttacking)
         {
             StartCoroutine(SpecialAttackZone());

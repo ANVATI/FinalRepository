@@ -70,12 +70,12 @@ Material:
     - _OutlineSoftness: 0.073
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.086
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333
     - _ScaleRatioB: 0.8629167
-    - _ScaleRatioC: 0.8629167
+    - _ScaleRatioC: 0.44411564
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -88,10 +88,10 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 512
     - _TextureWidth: 512
-    - _UnderlayDilate: 0
+    - _UnderlayDilate: 1
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: 0
-    - _UnderlaySoftness: 0
+    - _UnderlaySoftness: 0.943
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
@@ -102,7 +102,7 @@ Material:
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineColor: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
@@ -120,9 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Breathe Fire SDF 1
   m_EditorClassIdentifier: 
-  hashCode: -15346972
+  hashCode: 467015669
   material: {fileID: -4915217250966518676}
-  materialHashCode: 1877965252
+  materialHashCode: -1448531147
   m_Version: 1.1.0
   m_SourceFontFileGUID: d42cc50544612d540a3088c3d8c0fd00
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: d42cc50544612d540a3088c3d8c0fd00,
